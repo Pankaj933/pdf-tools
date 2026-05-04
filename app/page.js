@@ -139,7 +139,7 @@ export default function Home() {
             </Link>
 
             {/* Card 6: Protect PDF */}
-            <Link href="/protect-pdf" className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 p-8 hover:border-red-500/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-900/10">
+            {/* <Link href="/protect-pdf" className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 p-8 hover:border-red-500/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-900/10">
               <div className="w-14 h-14 rounded-xl bg-slate-800 flex items-center justify-center text-red-400 mb-6 group-hover:bg-gradient-to-br group-hover:from-red-600 group-hover:to-pink-600 group-hover:text-white transition-colors">
                 <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
               </div>
@@ -149,7 +149,7 @@ export default function Home() {
                 Encrypt File 
                 <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
               </div>
-            </Link>
+            </Link> */}
 
           </div>
         </div>
