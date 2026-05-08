@@ -21,8 +21,8 @@ export default function Home() {
           <div className="hidden md:flex gap-8 text-sm font-medium text-slate-400">
             <Link href="#tools" className="hover:text-white transition-colors">Tools</Link>
             <Link href="#why-choose" className="hover:text-white transition-colors">Why Us</Link>
-            <Link href="/about" className="hover:text-white transition-colors">About</Link>
-            <Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link>
+            <Link href="/about" className="hover:text-white transition-colors">About Us</Link>
+            <Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link>
           </div>
           <button className="bg-white text-slate-950 px-5 py-2 rounded-lg text-sm font-semibold hover:bg-slate-200 transition-colors">
             Sign In
@@ -264,8 +264,8 @@ export default function Home() {
               &copy; {new Date().getFullYear()} PDFSnap Inc. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm text-slate-500">
-              <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link href="#" className="hover:text-white transition-colors">Cookie Policy</Link>
+              <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+              {/* <Link href="#" className="hover:text-white transition-colors">Cookie Policy</Link> */}
             </div>
           </div>
         </div>
