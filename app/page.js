@@ -21,6 +21,7 @@ export default function Home() {
           <div className="hidden md:flex gap-8 text-sm font-medium text-slate-400">
             <Link href="#tools" className="hover:text-white transition-colors">Tools</Link>
             <Link href="#why-choose" className="hover:text-white transition-colors">Why Us</Link>
+            <Link href="/about" className="hover:text-white transition-colors">About</Link>
             <Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link>
           </div>
           <button className="bg-white text-slate-950 px-5 py-2 rounded-lg text-sm font-semibold hover:bg-slate-200 transition-colors">
