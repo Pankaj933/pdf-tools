@@ -15,7 +15,7 @@ import {
   CheckCircle2, 
   GripVertical, 
   Layers, 
-  Compress, 
+  Minimize2, 
   Scissors, 
   Image as ImageIcon, 
   Cpu, 
@@ -25,9 +25,9 @@ import {
   ChevronDown, 
   Twitter, 
   Linkedin, 
-  Github, 
+  GitHub, 
   Heart,
-  MonitorOff
+  MonitorSmartphone
 } from "lucide-react";
 
 // --- Animation Variants ---
@@ -95,7 +95,7 @@ const Navbar = () => {
 
           {/* Right Buttons (Desktop) */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link href="#" className="text-slate-600 font-medium hover:text-slate-900 transition-colors">Log in</Link>
+            {/* <Link href="#" className="text-slate-600 font-medium hover:text-slate-900 transition-colors">Log in</Link> */}
             <Link href="#tools" className="px-5 py-2.5 rounded-xl bg-slate-900 text-white font-medium hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 transform hover:-translate-y-0.5">
               Get Started
             </Link>
@@ -283,7 +283,7 @@ const Hero = () => {
   );
 };
 
-const ToolCard = ({ icon: Icon, title, desc, colorClass, delay }: any) => (
+const ToolCard = ({ icon: Icon, title, desc, colorClass, delay, link }) => (
   <motion.div
     variants={fadeInUp}
     initial="hidden"
@@ -292,7 +292,7 @@ const ToolCard = ({ icon: Icon, title, desc, colorClass, delay }: any) => (
     transition={{ delay: delay }}
     whileHover={{ y: -5 }}
   >
-    <Link href="#" className="block group p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-xl hover:shadow-slate-900/5 transition-all duration-300 h-full">
+    <Link href={link} className="block group p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-xl hover:shadow-slate-900/5 transition-all duration-300 h-full">
       <div className={`w-12 h-12 rounded-xl ${colorClass} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
         <Icon className="w-6 h-6" />
       </div>
@@ -321,11 +321,11 @@ const Tools = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-          <ToolCard icon={Layers} title="Merge PDF" desc="Combine multiple PDFs into one." colorClass="bg-blue-100 text-blue-600" delay={0} />
-          <ToolCard icon={Compress} title="Compress PDF" desc="Reduce file size significantly." colorClass="bg-green-100 text-green-600" delay={0.1} />
-          <ToolCard icon={Scissors} title="Split PDF" desc="Separate pages or extract ranges." colorClass="bg-orange-100 text-orange-600" delay={0.2} />
-          <ToolCard icon={ImageIcon} title="JPG to PDF" desc="Convert images to PDF documents." colorClass="bg-purple-100 text-purple-600" delay={0.3} />
-          <ToolCard icon={Sparkles} title="AI Summary" desc="Get instant summaries of docs." colorClass="bg-indigo-100 text-indigo-600" delay={0.4} badge="AI" />
+          <ToolCard icon={Layers} title="Merge PDF" desc="Combine multiple PDFs into one." colorClass="bg-blue-100 text-blue-600" delay={0} link="/merge-pdf" />
+          <ToolCard icon={Minimize2} title="Compress PDF" desc="Reduce file size significantly." colorClass="bg-green-100 text-green-600" delay={0.1} link="/compress-pdf" />
+          <ToolCard icon={Scissors} title="Split PDF" desc="Separate pages or extract ranges." colorClass="bg-orange-100 text-orange-600" delay={0.2} link="/split-pdf" />
+          <ToolCard icon={ImageIcon} title="JPG to PDF" desc="Convert images to PDF documents." colorClass="bg-purple-100 text-purple-600" delay={0.3} link="/jpg-to-pdf" />
+          <ToolCard icon={Sparkles} title="AI Summary" desc="Get instant summaries of docs." colorClass="bg-indigo-100 text-indigo-600" delay={0.4} badge="AI" link="/ai-summary" />
         </div>
         
         <div className="mt-12 text-center">
@@ -392,7 +392,7 @@ const WhyUs = () => {
   const features = [
     { icon: Zap, title: "Fast Processing", desc: "Cloud engine processes files in seconds.", color: "bg-blue-50 text-blue-600" },
     { icon: ShieldCheck, title: "Secure Files", desc: "256-bit SSL encryption. Auto-delete.", color: "bg-green-50 text-green-600" },
-    { icon: MonitorOff, title: "No Installation", desc: "Works directly in your browser.", color: "bg-purple-50 text-purple-600" },
+    { icon: MonitorSmartphone, title: "No Installation", desc: "Works directly in your browser.", color: "bg-purple-50 text-purple-600" },
     { icon: Heart, title: "Free to Use", desc: "Most tools are free forever.", color: "bg-orange-50 text-orange-600" },
   ];
 
@@ -431,7 +431,7 @@ const WhyUs = () => {
   );
 };
 
-const FAQItem = ({ question, answer }: any) => {
+const FAQItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -515,7 +515,7 @@ const Footer = () => (
         <div>
           <h4 className="font-bold text-slate-900 mb-4">Product</h4>
           <ul className="space-y-2 text-sm text-slate-500">
-            <li><Link href="#" className="hover:text-blue-600">Merge PDF</Link></li>
+            <li><Link href="/merge-pdf" className="hover:text-blue-600">Merge PDF</Link></li>
             <li><Link href="#" className="hover:text-blue-600">Compress PDF</Link></li>
             <li><Link href="#" className="hover:text-blue-600">AI Tools</Link></li>
           </ul>
@@ -537,12 +537,12 @@ const Footer = () => (
         </div>
       </div>
       <div className="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
-        <p>&copy; 2023 PDFSnap Inc.</p>
-        <div className="flex gap-4 mt-4 md:mt-0">
+        <p>&copy; 2026 PDFSnap Inc.</p>
+        {/* <div className="flex gap-4 mt-4 md:mt-0">
           <Twitter className="w-5 h-5 hover:text-blue-500 cursor-pointer" />
           <Linkedin className="w-5 h-5 hover:text-blue-500 cursor-pointer" />
-          <Github className="w-5 h-5 hover:text-slate-900 cursor-pointer" />
-        </div>
+          
+        </div> */}
       </div>
     </div>
   </footer>
