@@ -90,7 +90,8 @@ const Navbar = () => {
               <span>AI Tools</span>
               <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200">NEW</span>
             </Link>
-            <Link href="#footer" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">Contact</Link>
+            <Link href="/contact" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">Contact</Link>
+            <Link href="/about" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">About Us</Link>
           </div>
 
           {/* Right Buttons (Desktop) */}
@@ -102,7 +103,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:flex items-center">
+          <div className="md:hidden flex items-center">
             <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-slate-600 hover:text-slate-900 focus:outline-none">
               {mobileMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
             </button>
@@ -120,8 +121,11 @@ const Navbar = () => {
           <Link href="/" className="block text-lg font-medium text-slate-700">Home</Link>
           <Link href="#tools" className="block text-lg font-medium text-slate-700">Tools</Link>
           <Link href="#ai-features" className="block text-lg font-medium text-slate-700">AI Tools</Link>
+          <Link href="/contact" className="block text-lg font-medium text-slate-700">Contact</Link>
+          <Link href="/about" className="block text-lg font-medium text-slate-700">About Us</Link>
+          
           <hr className="border-slate-100"/>
-          <Link href="#" className="block text-lg font-medium text-slate-700">Log in</Link>
+          {/* <Link href="#" className="block text-lg font-medium text-slate-700">Log in</Link> */}
           <Link href="#tools" className="block w-full text-center px-5 py-3 rounded-xl bg-slate-900 text-white font-medium">Get Started</Link>
         </motion.div>
       )}
@@ -350,6 +354,7 @@ const AIFeatures = () => {
       <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/30 rounded-full blur-[80px] -z-10"></div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
         <motion.div 
           initial="hidden"
           whileInView="visible"
@@ -357,6 +362,7 @@ const AIFeatures = () => {
           variants={fadeInUp}
           className="text-center max-w-3xl mx-auto mb-20"
         >
+          
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-purple-400 text-xs font-bold uppercase tracking-wider mb-6">
             <Cpu className="w-3 h-3" /> Powered by GPT-4
           </div>
@@ -531,8 +537,8 @@ const Footer = () => (
         <div>
           <h4 className="font-bold text-slate-900 mb-4">Legal</h4>
           <ul className="space-y-2 text-sm text-slate-500">
-            <li><Link href="#" className="hover:text-blue-600">Privacy Policy</Link></li>
-            <li><Link href="#" className="hover:text-blue-600">Terms</Link></li>
+            <li><Link href="/privacy-policy" className="hover:text-blue-600">Privacy Policy</Link></li>
+            <li><Link href="/terms-of-service" className="hover:text-blue-600">Terms</Link></li>
           </ul>
         </div>
       </div>
