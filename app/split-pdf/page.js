@@ -1,6 +1,33 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { 
+  FileText, 
+  Menu, 
+  X, 
+  ArrowRight, 
+  Sparkles, 
+  ShieldCheck, 
+  Zap, 
+  Gift, 
+  CheckCircle2, 
+  GripVertical, 
+  Layers, 
+  Minimize2, 
+  Scissors, 
+  Image as ImageIcon, 
+  Cpu, 
+  MessageSquare, 
+  SearchCheck, 
+  Star, 
+  ChevronDown, 
+  Twitter, 
+  Linkedin, 
+  GitHub, 
+  Heart,
+  MonitorSmartphone
+} from "lucide-react";
 import Link from "next/link";
 
 // Note: Ensure you have these utilities installed or replace with your logic
@@ -10,6 +37,7 @@ import Link from "next/link";
 // --- Reusable Navbar Component (Matches Landing Page Layout) ---
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,48 +48,74 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav 
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
       className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${
-        scrolled 
-          ? "bg-slate-950/90 backdrop-blur-md border-slate-800" 
-          : "bg-slate-950/50 border-transparent"
+        scrolled ? "bg-white/80 backdrop-blur-md border-slate-100 shadow-sm" : "bg-white/60 border-white/0"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.4)] group-hover:scale-105 transition-transform">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-              </svg>
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
+              <FileText className="text-white w-6 h-6" />
             </div>
-            <span className="text-white">PDFSnap</span>
+            <span className="text-2xl font-bold tracking-tight text-slate-900">PDFSnap</span>
           </Link>
 
-          {/* Desktop Links */}
-          <div className="hidden md:flex gap-8 text-sm font-medium text-slate-400">
-            <Link href="/" className="hover:text-red-500 transition-colors">Home</Link>
-            <Link href="/#tools" className="hover:text-white transition-colors">All Tools</Link>
-            <Link href="/#why-choose" className="hover:text-white transition-colors">Features</Link>
+          {/* Desktop Menu */}
+          <div className="hidden md:flex space-x-8 items-center">
+            <Link href="/" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">Home</Link>
+            <Link href="#tools" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">Tools</Link>
+            <Link href="#ai-features" className="text-slate-600 hover:text-purple-600 font-medium transition-colors flex items-center gap-1">
+              <span>AI Tools</span>
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200">NEW</span>
+            </Link>
+            <Link href="/contact" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">Contact</Link>
+            <Link href="/about" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">About Us</Link>
           </div>
 
-          {/* Right Side Actions */}
-          <div className="flex items-center gap-4">
-             {/* Mobile Menu Toggle Placeholder */}
-            <button className="md:hidden text-slate-400 hover:text-white">
-               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
-            
-            <button className="hidden md:block bg-white/10 hover:bg-white/20 text-white border border-white/10 px-5 py-2 rounded-lg text-sm font-semibold transition-all">
-              Sign In
+          {/* Right Buttons (Desktop) */}
+          <div className="hidden md:flex items-center space-x-4">
+            {/* <Link href="#" className="text-slate-600 font-medium hover:text-slate-900 transition-colors">Log in</Link> */}
+            <Link href="#tools" className="px-5 py-2.5 rounded-xl bg-slate-900 text-white font-medium hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 transform hover:-translate-y-0.5">
+              Get Started
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center">
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-slate-600 hover:text-slate-900 focus:outline-none">
+              {mobileMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
             </button>
           </div>
         </div>
       </div>
-    </nav>
+
+      {/* Mobile Menu Panel */}
+      {mobileMenuOpen && (
+        <motion.div 
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          className="md:hidden absolute top-20 left-0 w-full bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-xl px-4 py-6 space-y-4"
+        >
+          <Link href="/" className="block text-lg font-medium text-slate-700">Home</Link>
+          <Link href="#tools" className="block text-lg font-medium text-slate-700">Tools</Link>
+          <Link href="#ai-features" className="block text-lg font-medium text-slate-700">AI Tools</Link>
+          <Link href="/contact" className="block text-lg font-medium text-slate-700">Contact</Link>
+          <Link href="/about" className="block text-lg font-medium text-slate-700">About Us</Link>
+          
+          <hr className="border-slate-100"/>
+          {/* <Link href="#" className="block text-lg font-medium text-slate-700">Log in</Link> */}
+          <Link href="#tools" className="block w-full text-center px-5 py-3 rounded-xl bg-slate-900 text-white font-medium">Get Started</Link>
+        </motion.div>
+      )}
+    </motion.nav>
   );
 };
+
 
 // --- Reusable Footer Component (Matches Landing Page Layout) ---
 const Footer = () => {
@@ -72,14 +126,12 @@ const Footer = () => {
           
           {/* Brand Column */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-[0_0_10px_rgba(239,68,68,0.5)]">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-              </div>
-              <span className="text-white">PDFSnap</span>
-            </Link>
+            <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
+              <FileText className="text-white w-6 h-6" />
+            </div>
+            <span className="text-2xl font-bold tracking-tight text-slate-601">PDFSnap</span>
+          </Link>
             <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
               Making document management easy, secure, and accessible for everyone. Built for the modern web.
             </p>
@@ -187,7 +239,7 @@ export default function SplitPDF() {
       : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans flex flex-col relative overflow-hidden selection:bg-red-500 selection:text-white">
+    <div className="min-h-screen  bg-white/60 text-white font-sans flex flex-col relative overflow-hidden selection:bg-red-500 selection:text-white">
       
       {/* --- Updated Background Ambient Glow (More Premium/Refined) --- */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
@@ -254,7 +306,7 @@ export default function SplitPDF() {
               </div>
             ) : (
               // Empty State
-              <div className="w-full border-2 border-dashed border-slate-700 rounded-xl p-10 text-center hover:border-red-500 hover:bg-slate-800/50 transition-all duration-300 flex flex-col items-center gap-3 group">
+              <div className="w-full border-2 border-dashed border-slate-600 rounded-xl p-10 text-center hover:border-red-500 hover:bg-slate-800/50 transition-all duration-300 flex flex-col items-center gap-3 group">
                 <div className="w-12 h-12 rounded-full bg-slate-800 group-hover:bg-red-500/10 flex items-center justify-center transition-colors">
                   <svg className="w-6 h-6 text-slate-400 group-hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>

@@ -68,9 +68,7 @@ const Navbar = () => {
     <motion.nav 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${
-        scrolled ? "bg-white/80 backdrop-blur-md border-slate-100 shadow-sm" : "bg-transparent border-transparent"
-      }`}
+      className="fixed top-0 w-full z-50 bg-white border-b border-slate-100 shadow-sm"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
@@ -363,6 +361,10 @@ const AIFeatures = () => {
           className="text-center max-w-3xl mx-auto mb-20"
         >
           
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-red-400 text-xs font-bold uppercase tracking-wider mb-8">
+             Comming Soon
+          </div>
+          <br></br>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-purple-400 text-xs font-bold uppercase tracking-wider mb-6">
             <Cpu className="w-3 h-3" /> Powered by GPT-4
           </div>

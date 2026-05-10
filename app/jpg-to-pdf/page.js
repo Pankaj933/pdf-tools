@@ -62,7 +62,7 @@ export default function JPGtoPDF() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans flex flex-col relative overflow-hidden selection:bg-red-500 selection:text-white">
+    <div className="min-h-screen bg-slate-601 text-white font-sans flex flex-col relative overflow-hidden selection:bg-red-500 selection:text-white">
       
       {/* --- Background Ambient Glow --- */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
@@ -74,18 +74,23 @@ export default function JPGtoPDF() {
       <nav className="fixed top-0 w-full z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.5)]">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
             </div>
             <span>PDFSnap</span>
           </Link>
-          <div className="hidden md:flex gap-8 text-sm font-medium text-slate-400">
-            <Link href="/" className="hover:text-red-500 transition-colors">Home</Link>
-            <Link href="/#tools" className="hover:text-red-500 transition-colors">All Tools</Link>
-            <Link href="/#why-choose" className="hover:text-red-500 transition-colors">Features</Link>
+          <div className="hidden md:flex space-x-8 items-center">
+            <Link href="/" className="text-slate-701 hover:text-blue-600 font-medium transition-colors">Home</Link>
+            <Link href="#tools" className="text-slate-701 hover:text-blue-600 font-medium transition-colors">Tools</Link>
+            <Link href="#ai-features" className="text-slate-701 hover:text-purple-600 font-medium transition-colors flex items-center gap-1">
+              <span>AI Tools</span>
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200">NEW</span>
+            </Link>
+            <Link href="/contact" className="text-slate-701 hover:text-blue-600 font-medium transition-colors">Contact</Link>
+            <Link href="/about" className="text-slate-701 hover:text-blue-600 font-medium transition-colors">About Us</Link>
           </div>
           <button className="bg-white text-slate-950 px-5 py-2 rounded-lg text-sm font-semibold hover:bg-slate-200 transition-colors">
-            Sign In
+            Get Started
           </button>
         </div>
       </nav>
@@ -93,7 +98,7 @@ export default function JPGtoPDF() {
       {/* --- Main Content --- */}
       <main className="flex-grow flex flex-col items-center justify-center p-4 pt-24 relative z-10">
         
-        <div className="w-full max-w-3xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/40 p-8">
+        <div className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/40 p-8">
           
           {/* Header */}
           <div className="text-center mb-8">
@@ -213,11 +218,11 @@ export default function JPGtoPDF() {
             {/* Brand Column */}
             <div className="space-y-4">
               <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.5)]">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                </div>
-                <span>PDFSnap</span>
-              </Link>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            </div>
+            <span>PDFSnap</span>
+          </Link>
               <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
                 Making document management easy, secure, and accessible for everyone.
               </p>
@@ -238,10 +243,10 @@ export default function JPGtoPDF() {
             <div>
               <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider text-slate-500">Company</h4>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link href="#" className="hover:text-red-500 transition-colors">About Us</Link></li>
+                <li><Link href="/about" className="hover:text-red-500 transition-colors">About Us</Link></li>
                 <li><Link href="#" className="hover:text-red-500 transition-colors">Pricing</Link></li>
-                <li><Link href="#" className="hover:text-red-500 transition-colors">Contact</Link></li>
-                <li><Link href="#" className="hover:text-red-500 transition-colors">Terms of Service</Link></li>
+                <li><Link href="/contact" className="hover:text-red-500 transition-colors">Contact</Link></li>
+                <li><Link href="/privacy-policy" className="hover:text-red-500 transition-colors">Privacy Policy</Link></li>
               </ul>
             </div>
 

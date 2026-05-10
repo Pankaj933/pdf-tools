@@ -37,6 +37,9 @@ export default function MergePDF() {
       setMerging(false);
     }
   };
+  
+
+  
 
   const formatSize = (bytes) =>
     bytes < 1024 * 1024
@@ -44,7 +47,7 @@ export default function MergePDF() {
       : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans flex flex-col relative overflow-hidden selection:bg-purple-500 selection:text-white">
+    <div className="min-h-screen bg-slate-601 text-white font-sans flex flex-col relative overflow-hidden selection:bg-purple-500 selection:text-white">
       
       {/* --- Background Ambient Glow --- */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
@@ -60,13 +63,18 @@ export default function MergePDF() {
             </div>
             <span>PDFSnap</span>
           </Link>
-          <div className="hidden md:flex gap-8 text-sm font-medium text-slate-400">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <Link href="/#tools" className="hover:text-white transition-colors">All Tools</Link>
-            <Link href="/#why-choose" className="hover:text-white transition-colors">Features</Link>
+          <div className="hidden md:flex space-x-8 items-center">
+            <Link href="/" className="text-slate-701 hover:text-blue-600 font-medium transition-colors">Home</Link>
+            <Link href="#tools" className="text-slate-701 hover:text-blue-600 font-medium transition-colors">Tools</Link>
+            <Link href="#ai-features" className="text-slate-701 hover:text-purple-600 font-medium transition-colors flex items-center gap-1">
+              <span>AI Tools</span>
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200">NEW</span>
+            </Link>
+            <Link href="/contact" className="text-slate-701 hover:text-blue-600 font-medium transition-colors">Contact</Link>
+            <Link href="/about" className="text-slate-701 hover:text-blue-600 font-medium transition-colors">About Us</Link>
           </div>
           <button className="bg-white text-slate-950 px-5 py-2 rounded-lg text-sm font-semibold hover:bg-slate-200 transition-colors">
-            Sign In
+            Get Started
           </button>
         </div>
       </nav>
