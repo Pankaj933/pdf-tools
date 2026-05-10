@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://pdfsnap.in"),
   title: "Free PDF Tools Online - Compress, Merge, Split PDFs | PDFSnap",
   description:
     "PDFSnap provides free online PDF tools to compress, merge, split and convert PDF files. Fast, secure and no watermark. Works on all devices.",
@@ -27,11 +28,20 @@ export const metadata: Metadata = {
     "free pdf tools"
   ],
 
+   robots: {
+    index: true,
+    follow: true,
+  },
+
+   icons: {
+    icon: "/favicon.ico",
+  },
+
   openGraph: {
     title: "Free PDF Tools - PDFSnap",
     description:
       "Compress, merge and convert PDF files online for free. Fast and secure PDF tools.",
-    url: "https://pdf-tools-ten-delta.vercel.app/",
+    url: "https://pdfsnap.in/",
     siteName: "PDFSnap",
     type: "website",
   },
