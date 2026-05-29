@@ -34,8 +34,12 @@ export const metadata: Metadata = {
   },
 
    icons: {
-    icon: "/favicon.ico",
-  },
+  icon: [
+    {
+      url: "/pdflogo.png",
+    },
+  ],
+},
 
   openGraph: {
     title: "Free PDF Tools - PDFSnap",
