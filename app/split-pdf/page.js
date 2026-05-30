@@ -31,8 +31,8 @@ import {
 import Link from "next/link";
 
 // Note: Ensure you have these utilities installed or replace with your logic
-// import { splitPDF } from "../../utils/splitPdf"; 
-// import { saveAs } from "file-saver"; 
+import { splitPDF } from "../../utils/splitPdf"; 
+import { saveAs } from "file-saver"; 
 
 // --- Reusable Navbar Component (Matches Landing Page Layout) ---
 const Navbar = () => {
@@ -52,8 +52,8 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${
-        scrolled ? "bg-white/80 backdrop-blur-md border-slate-100 shadow-sm" : "bg-white/60 border-white/0"
-      }`}
+  scrolled ? "bg-slate-950/90 backdrop-blur-md border-slate-800 shadow-sm shadow-black/50" : "bg-slate-950/80 border-slate-800/50"
+}`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
@@ -62,19 +62,19 @@ const Navbar = () => {
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
               <FileText className="text-white w-6 h-6" />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-slate-900">PDFSnap</span>
+            <span className="text-2xl font-bold tracking-tight text-slate-100">PDFSnap</span>
           </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8 items-center">
-            <Link href="/" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">Home</Link>
-            <Link href="#tools" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">Tools</Link>
-            <Link href="#ai-features" className="text-slate-600 hover:text-purple-600 font-medium transition-colors flex items-center gap-1">
+            <Link href="/" className="text-slate-400 hover:text-blue-400 font-medium transition-colors">Home</Link>
+            <Link href="#tools" className="text-slate-400 hover:text-blue-400 font-medium transition-colors">Tools</Link>
+            <Link href="#ai-features" className="text-slate-400 hover:text-purple-400 font-medium transition-colors flex items-center gap-1">
               <span>AI Tools</span>
               <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200">NEW</span>
             </Link>
-            <Link href="/contact" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">Contact</Link>
-            <Link href="/about" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">About Us</Link>
+            <Link href="/contact" className="text-slate-400 hover:text-blue-400 font-medium transition-colors">Contact</Link>
+            <Link href="/about" className="text-slate-400 hover:text-blue-400 font-medium transition-colors">About Us</Link>
           </div>
 
           {/* Right Buttons (Desktop) */}
@@ -101,11 +101,11 @@ const Navbar = () => {
           animate={{ opacity: 1, height: "auto" }}
           className="md:hidden absolute top-20 left-0 w-full bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-xl px-4 py-6 space-y-4"
         >
-          <Link href="/" className="block text-lg font-medium text-slate-700">Home</Link>
-          <Link href="#tools" className="block text-lg font-medium text-slate-700">Tools</Link>
-          <Link href="#ai-features" className="block text-lg font-medium text-slate-700">AI Tools</Link>
-          <Link href="/contact" className="block text-lg font-medium text-slate-700">Contact</Link>
-          <Link href="/about" className="block text-lg font-medium text-slate-700">About Us</Link>
+          <Link href="/" className="block text-lg font-medium text-slate-900">Home</Link>
+          <Link href="#tools" className="block text-lg font-medium text-slate-400">Tools</Link>
+          <Link href="#ai-features" className="block text-lg font-medium text-slate-400">AI Tools</Link>
+          <Link href="/contact" className="block text-lg font-medium text-slate-400">Contact</Link>
+          <Link href="/about" className="block text-lg font-medium text-slate-400">About Us</Link>
           
           <hr className="border-slate-100"/>
           {/* <Link href="#" className="block text-lg font-medium text-slate-700">Log in</Link> */}
@@ -210,28 +210,24 @@ export default function SplitPDF() {
   };
 
   const handleSplit = async () => {
-    if (!file) return alert("Upload PDF first");
+  if (!file) return alert("Upload PDF first");
 
-    setLoading(true);
-    setDone(false);
+  setLoading(true);
+  setDone(false);
 
-    try {
-      // Logic placeholder - replace with actual implementation
-      // const files = await splitPDF(file); 
-      // files.forEach((blob, index) => saveAs(blob, `split-page-${index + 1}.pdf`));
-      
-      // Simulating delay for UI demo
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log("Splitting simulated");
-      
-      setDone(true);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to split PDF.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const files = await splitPDF(file);                          // ✅ actual split
+    files.forEach((blob, index) => 
+      saveAs(blob, `page-${index + 1}.pdf`)                     // ✅ download each page
+    );
+    setDone(true);
+  } catch (error) {
+    console.error(error);
+    alert("Failed to split PDF.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const formatSize = (bytes) =>
     bytes < 1024 * 1024
