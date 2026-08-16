@@ -524,16 +524,16 @@ const Footer = () => (
           <h4 className="font-bold text-slate-900 mb-4">Product</h4>
           <ul className="space-y-2 text-sm text-slate-500">
             <li><Link href="/merge-pdf" className="hover:text-blue-600">Merge PDF</Link></li>
-            <li><Link href="#" className="hover:text-blue-600">Compress PDF</Link></li>
-            <li><Link href="#" className="hover:text-blue-600">AI Tools</Link></li>
+            <li><Link href="/compress-pdf" className="hover:text-blue-600">Compress PDF</Link></li>
+            <li><Link href="/ai-tools" className="hover:text-blue-600">AI Tools</Link></li>
           </ul>
         </div>
         <div>
           <h4 className="font-bold text-slate-900 mb-4">Company</h4>
           <ul className="space-y-2 text-sm text-slate-500">
-            <li><Link href="#" className="hover:text-blue-600">About Us</Link></li>
-            <li><Link href="#" className="hover:text-blue-600">Pricing</Link></li>
-            <li><Link href="#" className="hover:text-blue-600">Contact</Link></li>
+            <li><Link href="/about" className="hover:text-blue-600">About Us</Link></li>
+            <li><Link href="/pricing" className="hover:text-blue-600">Pricing</Link></li>
+            <li><Link href="/contact" className="hover:text-blue-600">Contact</Link></li>
           </ul>
         </div>
         <div>
