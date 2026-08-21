@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { 
   FileText, 
@@ -73,12 +74,26 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
-              <FileText className="text-white w-6 h-6" />
-            </div>
-            <span className="text-2xl font-bold tracking-tight text-slate-900">PDFSnap</span>
-          </Link>
+          <Link href="/" className="flex items-center gap-3 group">
+  <Image
+    src="/pdfsnap-icon.png"
+    alt="PDFSnap Logo"
+    width={48}
+    height={48}
+    className="w-12 h-12 object-contain"
+    priority
+  />
+
+  <div className="flex flex-col">
+    <span className="text-2xl font-bold tracking-tight text-slate-900 leading-none">
+      PDFSnap
+    </span>
+
+    <span className="text-[6px] sm:text-[7px] font-semibold tracking-[0.18em] text-[#06466b] mt-1">
+  SNAP. CONVERT. DONE.
+</span>
+  </div>
+</Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8 items-center">
