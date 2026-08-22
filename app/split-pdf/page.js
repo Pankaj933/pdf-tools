@@ -29,6 +29,7 @@ import {
   MonitorSmartphone
 } from "lucide-react";
 import Link from "next/link";
+import Navbar from "../components/Navbar";
 
 // Note: Ensure you have these utilities installed or replace with your logic
 import { splitPDF } from "../../utils/splitPdf"; 

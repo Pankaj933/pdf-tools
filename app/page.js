@@ -28,6 +28,11 @@ import {
   Linkedin, 
   GitHub, 
   Heart,
+  Table2,
+  RotateCw,
+  Unlock,
+  Grid2X2,
+  FileImage,
   MonitorSmartphone
 } from "lucide-react";
 
@@ -53,249 +58,125 @@ const staggerContainer = {
 
 // --- Sub-Components ---
 
-const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  return (
-    <motion.nav 
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className="fixed top-0 w-full z-50 bg-white border-b border-slate-100 shadow-sm"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-  <Image
-    src="/pdfsnap-icon.png"
-    alt="PDFSnap Logo"
-    width={48}
-    height={48}
-    className="w-12 h-12 object-contain"
-    priority
-  />
-
-  <div className="flex flex-col">
-    <span className="text-2xl font-bold tracking-tight text-slate-900 leading-none">
-      PDFSnap
-    </span>
-
-    <span className="text-[6px] sm:text-[7px] font-semibold tracking-[0.18em] text-[#06466b] mt-1">
-  SNAP. CONVERT. DONE.
-</span>
-  </div>
-</Link>
-
-          {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8 items-center">
-            <Link href="/" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">Home</Link>
-            <Link href="#tools" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">Tools</Link>
-            <Link href="#ai-features" className="text-slate-600 hover:text-purple-600 font-medium transition-colors flex items-center gap-1">
-              <span>AI Tools</span>
-              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200">NEW</span>
-            </Link>
-            <Link href="/contact" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">Contact</Link>
-            <Link href="/about" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">About Us</Link>
-          </div>
-
-          {/* Right Buttons (Desktop) */}
-          <div className="hidden md:flex items-center space-x-4">
-            {/* <Link href="#" className="text-slate-600 font-medium hover:text-slate-900 transition-colors">Log in</Link> */}
-            <Link href="#tools" className="px-5 py-2.5 rounded-xl bg-slate-900 text-white font-medium hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 transform hover:-translate-y-0.5">
-              Get Started
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-slate-600 hover:text-slate-900 focus:outline-none">
-              {mobileMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu Panel */}
-      {mobileMenuOpen && (
-        <motion.div 
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          className="md:hidden absolute top-20 left-0 w-full bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-xl px-4 py-6 space-y-4"
-        >
-          <Link href="/" className="block text-lg font-medium text-slate-700">Home</Link>
-          <Link href="#tools" className="block text-lg font-medium text-slate-700">Tools</Link>
-          <Link href="#ai-features" className="block text-lg font-medium text-slate-700">AI Tools</Link>
-          <Link href="/contact" className="block text-lg font-medium text-slate-700">Contact</Link>
-          <Link href="/about" className="block text-lg font-medium text-slate-700">About Us</Link>
-          
-          <hr className="border-slate-100"/>
-          {/* <Link href="#" className="block text-lg font-medium text-slate-700">Log in</Link> */}
-          <Link href="#tools" className="block w-full text-center px-5 py-3 rounded-xl bg-slate-900 text-white font-medium">Get Started</Link>
-        </motion.div>
-      )}
-    </motion.nav>
-  );
-};
-
 const Hero = () => {
   return (
-    <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-slate-50">
+    <section className="relative pt-32 pb-20  lg:pb-32 overflow-hidden bg-slate-50">
+      
       {/* Ambient Glows */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 overflow-hidden pointer-events-none">
+        
         <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 10, repeat: Infinity }}
+          animate={{ 
+            scale: [1, 1.2, 1], 
+            opacity: [0.3, 0.5, 0.3] 
+          }}
+          transition={{ 
+            duration: 10, 
+            repeat: Infinity 
+          }}
           className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-blue-400/30 rounded-full blur-[100px]" 
         />
+
         <motion.div 
-          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity, delay: 1 }}
+          animate={{ 
+            scale: [1, 1.1, 1], 
+            opacity: [0.3, 0.5, 0.3] 
+          }}
+          transition={{ 
+            duration: 8, 
+            repeat: Infinity, 
+            delay: 1 
+          }}
           className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-purple-400/30 rounded-full blur-[100px]" 
         />
+
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-          
-          {/* Left Content */}
-          <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
-            className="text-center lg:text-left"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 shadow-sm mb-8">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-              </span>
-              <span className="text-sm font-semibold text-slate-600">Trusted by 1M+ users</span>
-            </div>
 
-            <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.15] mb-6">
-              All-in-One PDF Tools <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                for Free
-              </span>
-            </h1>
-            
-            <p className="text-xl text-slate-500 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              Merge, Compress, Split, Convert and Summarize PDFs instantly with AI-powered tools. Experience the future of document management.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link href="#tools" className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-slate-900 rounded-xl hover:bg-blue-600 transition-all duration-300 shadow-xl shadow-slate-900/10 hover:shadow-blue-500/25 hover:-translate-y-1">
-                Start Using Tools
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Link>
-              <Link href="#ai-features" className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:border-purple-300 hover:text-purple-600 transition-all duration-300 hover:-translate-y-1">
-                <Sparkles className="mr-2 w-5 h-5 text-purple-600" />
-                Try AI Summary
-              </Link>
-            </div>
+        {/* Center Content */}
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeInUp}
+          className="text-center flex flex-col items-center"
+        >
 
-            <div className="mt-10 flex items-center justify-center lg:justify-start gap-6 text-slate-400 text-sm font-medium">
-              <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-green-500"/> Secure</span>
-              <span className="flex items-center gap-1.5"><Zap className="w-4 h-4 text-yellow-500"/> Fast</span>
-              <span className="flex items-center gap-1.5"><Gift className="w-4 h-4 text-pink-500"/> Free</span>
-            </div>
-          </motion.div>
+          {/* Trusted Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 shadow-sm mb-8">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            </span>
 
-          {/* Right Visual: Floating UI */}
-          <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
-            className="relative lg:h-[600px] w-full flex items-center justify-center"
-          >
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-100/50 to-purple-100/50 rounded-3xl transform rotate-3 scale-95"></div>
-            
-            <div className="relative w-full max-w-lg">
-              {/* Main Card */}
-              <motion.div 
-                animate={{ y: [0, -15, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="bg-white rounded-2xl shadow-2xl shadow-slate-900/10 border border-slate-100 p-6 relative z-10"
-              >
-                <div className="flex items-center justify-between mb-6 border-b border-slate-50 pb-4">
-                  <h3 className="font-bold text-slate-800">Merge PDF</h3>
-                  <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded">Ready</span>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg border border-slate-100">
-                    <div className="w-10 h-10 bg-red-100 rounded flex items-center justify-center text-red-500">
-                      <FileText className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1 space-y-2">
-                      <div className="h-2.5 w-32 bg-slate-200 rounded"></div>
-                      <div className="h-2 w-16 bg-slate-100 rounded"></div>
-                    </div>
-                    <GripVertical className="text-slate-300" />
-                  </div>
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg border border-slate-100">
-                    <div className="w-10 h-10 bg-red-100 rounded flex items-center justify-center text-red-500">
-                      <FileText className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1 space-y-2">
-                      <div className="h-2.5 w-40 bg-slate-200 rounded"></div>
-                      <div className="h-2 w-12 bg-slate-100 rounded"></div>
-                    </div>
-                    <GripVertical className="text-slate-300" />
-                  </div>
-                  <div className="mt-4 h-10 w-full bg-blue-600 rounded-lg flex items-center justify-center text-white text-sm font-medium shadow-lg shadow-blue-500/20">
-                    Merge PDFs
-                  </div>
-                </div>
-              </motion.div>
+            <span className="text-sm font-semibold text-slate-600">
+              Trusted by 1M+ users
+            </span>
+          </div>
 
-              {/* Floating Badge 1 */}
-              <motion.div 
-                animate={{ y: [0, -20, 0] }}
-                transition={{ duration: 5, repeat: Infinity, delay: 1, ease: "easeInOut" }}
-                className="absolute -top-6 -right-4 bg-white p-4 rounded-xl shadow-xl border border-slate-100 z-20"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-                    <CheckCircle2 className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-500 font-medium">Compression</p>
-                    <p className="text-sm font-bold text-slate-900">-85% Size</p>
-                  </div>
-                </div>
-              </motion.div>
+          {/* Heading */}
+          <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.15] mb-6">
+            All-in-One PDF Tools
+            <br />
 
-               {/* Floating Badge 2 */}
-               <motion.div 
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 7, repeat: Infinity, delay: 2, ease: "easeInOut" }}
-                className="absolute -bottom-4 -left-8 bg-slate-900 text-white p-4 rounded-xl shadow-xl border border-slate-800 z-0"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-purple-400">
-                    <Sparkles className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-400 font-medium">AI Summary</p>
-                    <p className="text-sm font-bold text-white">Generated</p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+              for Free
+            </span>
+          </h1>
+
+          {/* Description */}
+          <p className="text-xl text-slate-500 mb-10 max-w-2xl leading-relaxed">
+            Merge, Compress, Split, Convert and Summarize PDFs instantly
+            with AI-powered tools. Experience the future of document
+            management.
+          </p>
+
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+            <Link 
+              href="#tools" 
+              className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-slate-900 rounded-xl hover:bg-blue-600 transition-all duration-300 shadow-xl shadow-slate-900/10 hover:shadow-blue-500/25 hover:-translate-y-1"
+            >
+              Start Using Tools
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Link>
+
+            <Link 
+              href="#ai-features" 
+              className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:border-purple-300 hover:text-purple-600 transition-all duration-300 hover:-translate-y-1"
+            >
+              <Sparkles className="mr-2 w-5 h-5 text-purple-600" />
+              Try AI Summary
+            </Link>
+
+          </div>
+
+          {/* Features */}
+          <div className="mt-10 flex items-center justify-center gap-6 text-slate-400 text-sm font-medium">
+
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-green-500" />
+              Secure
+            </span>
+
+            <span className="flex items-center gap-1.5">
+              <Zap className="w-4 h-4 text-yellow-500" />
+              Fast
+            </span>
+
+            <span className="flex items-center gap-1.5">
+              <Gift className="w-4 h-4 text-pink-500" />
+              Free
+            </span>
+
+          </div>
+
+        </motion.div>
+
       </div>
+
     </section>
   );
 };
@@ -306,50 +187,223 @@ const ToolCard = ({ icon: Icon, title, desc, colorClass, delay, link }) => (
     initial="hidden"
     whileInView="visible"
     viewport={{ once: true }}
-    transition={{ delay: delay }}
-    whileHover={{ y: -5 }}
+    transition={{ delay }}
+    whileHover={{ y: -6 }}
+    className="h-full min-w-0"
   >
-    <Link href={link} className="block group p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-xl hover:shadow-slate-900/5 transition-all duration-300 h-full">
-      <div className={`w-12 h-12 rounded-xl ${colorClass} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-        <Icon className="w-6 h-6" />
+    <Link
+      href={link}
+      className="
+        group
+        relative
+        flex
+        flex-col
+        h-full
+        min-h-[250px]
+        w-full
+        bg-white
+        border
+        border-slate-200
+        rounded-2xl
+        p-6
+        sm:p-7
+        overflow-hidden
+        transition-all
+        duration-300
+        hover:border-blue-200
+        hover:shadow-2xl
+        hover:shadow-slate-200/70
+      "
+    >
+      {/* Icon */}
+      <div
+        className={`
+          w-14
+          h-14
+          shrink-0
+          rounded-2xl
+          ${colorClass}
+          flex
+          items-center
+          justify-center
+          mb-7
+          transition-transform
+          duration-300
+          group-hover:scale-110
+        `}
+      >
+        <Icon className="w-7 h-7" />
       </div>
-      <h3 className="font-bold text-slate-900 mb-1">{title}</h3>
-      <p className="text-sm text-slate-500 mb-4">{desc}</p>
-      <span className="text-blue-600 text-sm font-semibold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-[-10px] group-hover:translate-x-0 duration-300">
-        Open <ArrowRight className="w-4 h-4" />
-      </span>
+
+      {/* Title */}
+      <h3 className="text-[21px] leading-tight font-bold text-slate-800 mb-4">
+        {title}
+      </h3>
+
+      {/* Description */}
+      <p className="text-[15px] leading-7 text-slate-500">
+        {desc}
+      </p>
+
+      {/* Bottom */}
+      <div
+        className="
+          mt-auto
+          pt-6
+          flex
+          items-center
+          gap-2
+          text-sm
+          font-semibold
+          text-blue-600
+          opacity-0
+          translate-y-2
+          transition-all
+          duration-300
+          group-hover:opacity-100
+          group-hover:translate-y-0
+        "
+      >
+        Open Tool
+
+        <ArrowRight className="w-4 h-4" />
+      </div>
     </Link>
   </motion.div>
 );
 
 const Tools = () => {
+  const tools = [
+    {
+      icon: Layers,
+      title: "Merge PDF",
+      desc: "Combine multiple PDFs into one.",
+      colorClass: "bg-purple-100 text-purple-600",
+      delay: 0,
+      link: "/merge-pdf",
+    },
+    {
+      icon: Minimize2,
+      title: "Compress PDF",
+      desc: "Reduce PDF file size while keeping quality.",
+      colorClass: "bg-green-100 text-green-600",
+      delay: 0.1,
+      link: "/compress-pdf",
+    },
+    {
+      icon: Scissors,
+      title: "Split PDF",
+      desc: "Extract pages or split PDF into files.",
+      colorClass: "bg-orange-100 text-orange-600",
+      delay: 0.2,
+      link: "/split-pdf",
+    },
+    {
+      icon: ImageIcon,
+      title: "JPG to PDF",
+      desc: "Convert JPG and PNG images into PDF.",
+      colorClass: "bg-pink-100 text-pink-600",
+      delay: 0.3,
+      link: "/jpg-to-pdf",
+    },
+    {
+      icon: FileImage,
+      title: "PDF to JPG",
+      desc: "Convert PDF pages into JPG images.",
+      colorClass: "bg-blue-100 text-blue-600",
+      delay: 0.4,
+      link: "/pdf-to-jpg",
+    },
+    {
+      icon: FileText,
+      title: "PDF to Word",
+      desc: "Convert PDF to editable Word documents.",
+      colorClass: "bg-blue-100 text-blue-600",
+      delay: 0.5,
+      link: "/pdf-to-word",
+    },
+    {
+      icon: Table2,
+      title: "PDF to Excel",
+      desc: "Convert PDF tables into Excel sheets.",
+      colorClass: "bg-green-100 text-green-600",
+      delay: 0.6,
+      link: "/pdf-to-excel",
+    },
+    {
+      icon: RotateCw,
+      title: "Rotate PDF",
+      desc: "Rotate PDF pages left or right.",
+      colorClass: "bg-indigo-100 text-indigo-600",
+      delay: 0.7,
+      link: "/rotate-pdf",
+    },
+    {
+      icon: Unlock,
+      title: "Unlock PDF",
+      desc: "Remove password protection from PDF.",
+      colorClass: "bg-emerald-100 text-emerald-600",
+      delay: 0.8,
+      link: "/unlock-pdf",
+    },
+    {
+      icon: Grid2X2,
+      title: "More Tools",
+      desc: "Explore more powerful PDF utilities.",
+      colorClass: "bg-slate-100 text-slate-600",
+      delay: 0.9,
+      link: "#all-tools",
+    },
+  ];
+
   return (
     <section id="tools" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div 
+
+        {/* Heading */}
+        <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeInUp}
-          className="text-center max-w-3xl mx-auto mb-16"
+          className="text-center max-w-3xl mx-auto mb-14"
         >
-          <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">Popular PDF Tools</h2>
-          <p className="text-lg text-slate-500">Access all the tools you need to manage your documents efficiently. Fast, secure, and free.</p>
+          <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
+            Popular PDF Tools
+          </h2>
+
+          <p className="text-lg text-slate-500">
+            Everything you need to work with PDFs in one place.
+            Fast, secure and easy to use.
+          </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-          <ToolCard icon={Layers} title="Merge PDF" desc="Combine multiple PDFs into one." colorClass="bg-blue-100 text-blue-600" delay={0} link="/merge-pdf" />
-          <ToolCard icon={Minimize2} title="Compress PDF" desc="Reduce file size significantly." colorClass="bg-green-100 text-green-600" delay={0.1} link="/compress-pdf" />
-          <ToolCard icon={Scissors} title="Split PDF" desc="Separate pages or extract ranges." colorClass="bg-orange-100 text-orange-600" delay={0.2} link="/split-pdf" />
-          <ToolCard icon={ImageIcon} title="JPG to PDF" desc="Convert images to PDF documents." colorClass="bg-purple-100 text-purple-600" delay={0.3} link="/jpg-to-pdf" />
-          <ToolCard icon={Sparkles} title="AI Summary" desc="Get instant summaries of docs." colorClass="bg-indigo-100 text-indigo-600" delay={0.4} badge="AI" link="/ai-summary" />
+        {/* Tool Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          {tools.map((tool) => (
+            <ToolCard
+              key={tool.title}
+              icon={tool.icon}
+              title={tool.title}
+              desc={tool.desc}
+              colorClass={tool.colorClass}
+              delay={tool.delay}
+              link={tool.link}
+            />
+          ))}
         </div>
-        
+
+        {/* View All */}
         <div className="mt-12 text-center">
-          <Link href="#" className="inline-flex items-center text-slate-600 hover:text-blue-600 font-medium transition-colors">
-            View all 20+ tools <ChevronDown className="w-4 h-4 ml-1" />
+          <Link
+            href="/tools"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-slate-700 font-semibold border border-slate-200 hover:border-blue-300 hover:text-blue-600 hover:shadow-md transition-all"
+          >
+            View All PDF Tools
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
+
       </div>
     </section>
   );
@@ -575,7 +629,7 @@ const Footer = () => (
 export default function Home() {
   return (
     <main className="min-h-screen font-sans text-slate-900 bg-slate-50 selection:bg-blue-200">
-      <Navbar />
+      
       <Hero />
       <Tools />
       <AIFeatures />

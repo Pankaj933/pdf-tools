@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { imagesToPDF } from "../../utils/jpgToPdf"; // Keep your existing logic
 import { saveAs } from "file-saver";               // Keep your existing logic
 import Link from "next/link";
+import Navbar from "../components/Navbar";
 
 export default function JPGtoPDF() {
   const [files, setFiles] = useState([]);
@@ -71,29 +72,7 @@ export default function JPGtoPDF() {
       </div>
 
       {/* --- Navigation --- */}
-      <nav className="fixed top-0 w-full z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            </div>
-            <span>PDFSnap</span>
-          </Link>
-          <div className="hidden md:flex space-x-8 items-center">
-            <Link href="/" className="text-slate-701 hover:text-blue-600 font-medium transition-colors">Home</Link>
-            <Link href="#tools" className="text-slate-701 hover:text-blue-600 font-medium transition-colors">Tools</Link>
-            <Link href="#ai-features" className="text-slate-701 hover:text-purple-600 font-medium transition-colors flex items-center gap-1">
-              <span>AI Tools</span>
-              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200">NEW</span>
-            </Link>
-            <Link href="/contact" className="text-slate-701 hover:text-blue-600 font-medium transition-colors">Contact</Link>
-            <Link href="/about" className="text-slate-701 hover:text-blue-600 font-medium transition-colors">About Us</Link>
-          </div>
-          <button className="bg-white text-slate-950 px-5 py-2 rounded-lg text-sm font-semibold hover:bg-slate-200 transition-colors">
-            Get Started
-          </button>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* --- Main Content --- */}
       <main className="flex-grow flex flex-col items-center justify-center p-4 pt-24 relative z-10">
