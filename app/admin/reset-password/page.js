@@ -16,25 +16,18 @@ export default function ResetPassword() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const exchangeRecoveryCode = async () => {
-      const code = new URLSearchParams(window.location.search).get("code");
+    const loadRecoverySession = async () => {
+      const { data, error: sessionError } = await supabase.auth.getSession();
 
-      if (!code) {
-        setError("Invalid or expired password reset link.");
-        return;
-      }
-
-      const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-
-      if (exchangeError) {
-        setError(exchangeError.message);
+      if (sessionError || !data.session) {
+        setError(sessionError?.message || "Invalid or expired password reset link.");
         return;
       }
 
       setSessionReady(true);
     };
 
-    exchangeRecoveryCode();
+    loadRecoverySession();
   }, []);
 
   const handleSubmit = async (event) => {
