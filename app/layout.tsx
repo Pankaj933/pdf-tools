@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-import Navbar from "./components/Navbar";
+import ConditionalNavbar from "./components/ConditionalNavbar";
+import ToolSeoContent from "./components/toolSeoContent";
+
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +21,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://pdfsnap.in"),
   title: "Free PDF Tools Online - Compress, Merge, Split PDFs | PDFSnap",
   description:
-    "PDFSnap provides free online PDF tools to compress, merge, split and convert PDF files. Fast, secure and no watermark. Works on all devices.",
+    "PDF Snap,PDFSnap provides free online PDF tools to compress, merge, split and convert PDF files. Fast, secure and no watermark. Works on all devices.",
   
   keywords: [
     "compress pdf online",
@@ -71,8 +74,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar />
+       <ConditionalNavbar />
         {children}
+        <ToolSeoContent />
 
       </body>
     </html>

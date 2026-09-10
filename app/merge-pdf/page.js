@@ -1,233 +1,197 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { mergePDFs } from "../../utils/mergePdf"; // Keep your existing logic
-import { saveAs } from "file-saver";            // Keep your existing logic
-import Link from "next/link";
-import Navbar from "../components/Navbar";
+import { useState } from "react";
+import {
+  CheckCircle2,
+  FileText,
+  Loader2,
+  Combine,
+  Upload,
+  X,
+} from "lucide-react";
+import { saveAs } from "file-saver";
+import { mergePDFs } from "../../utils/mergePdf";
+
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 export default function MergePDF() {
   const [files, setFiles] = useState([]);
   const [merging, setMerging] = useState(false);
   const [done, setDone] = useState(false);
-  const inputRef = useRef(null);
+  const [error, setError] = useState("");
 
-  const handleFileChange = (e) => {
-    setFiles((prev) => [...prev, ...Array.from(e.target.files)]);
+  const addFiles = (selectedFiles) => {
+    const incomingFiles = Array.from(selectedFiles || []);
+    if (!incomingFiles.length) return;
+
     setDone(false);
+    setError("");
+
+    const invalidFile = incomingFiles.find(
+      (file) =>
+        (file.type !== "application/pdf" &&
+          !file.name.toLowerCase().endsWith(".pdf")) ||
+        file.size > MAX_FILE_SIZE
+    );
+
+    if (invalidFile) {
+      setError(
+        invalidFile.size > MAX_FILE_SIZE
+          ? `${invalidFile.name} is larger than the 50MB limit.`
+          : `${invalidFile.name} is not a valid PDF file.`
+      );
+      return;
+    }
+
+    setFiles((currentFiles) => [...currentFiles, ...incomingFiles]);
   };
 
-  const removeFile = (idx) => {
-    setFiles((prev) => prev.filter((_, i) => i !== idx));
+  const handleInputChange = (event) => {
+    addFiles(event.target.files);
+    event.target.value = "";
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    addFiles(event.dataTransfer.files);
+  };
+
+  const removeFile = (indexToRemove) => {
+    setFiles((currentFiles) =>
+      currentFiles.filter((_, index) => index !== indexToRemove)
+    );
+    setDone(false);
   };
 
   const clearAll = () => {
     setFiles([]);
     setDone(false);
-    if (inputRef.current) inputRef.current.value = "";
+    setError("");
   };
 
   const handleMerge = async () => {
-    if (files.length < 2) return;
+    if (files.length < 2 || merging) return;
+
     setMerging(true);
+    setDone(false);
+    setError("");
+
     try {
       const merged = await mergePDFs(files);
       saveAs(merged, "merged.pdf");
       setDone(true);
+    } catch (mergeError) {
+      console.error("PDF merge error:", mergeError);
+      setError("Unable to merge these PDFs. Please try again.");
     } finally {
       setMerging(false);
     }
   };
-  
-
-  
 
   const formatSize = (bytes) =>
     bytes < 1024 * 1024
-      ? `${(bytes / 1024).toFixed(0)} KB`
-      : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+      ? `${(bytes / 1024).toFixed(1)} KB`
+      : `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 
   return (
-    <div className="min-h-screen bg-slate-601 text-white font-sans flex flex-col relative overflow-hidden selection:bg-purple-500 selection:text-white">
-      
-      {/* --- Background Ambient Glow --- */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-purple-600/20 blur-[120px] rounded-full" />
-      </div>
+    <main className="min-h-screen bg-slate-50 text-slate-900">
+      <section className="px-4 pb-10 pt-28">
+        <div className="mx-auto max-w-5xl text-center">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-orange-100 bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-700">
+            <Combine className="h-4 w-4" />
+            Free PDF Tool
+          </div>
+          <h1 className="text-4xl font-extrabold tracking-tight md:text-5xl">
+            Merge <span className="bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent">PDF</span>
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-500">
+            Combine multiple PDF files into one organized document in seconds.
+          </p>
+        </div>
+      </section>
 
-      {/* --- Navigation --- */}
-      <Navbar />
-
-      {/* --- Main Content --- */}
-      {/* pt-24 ensures content clears the fixed navbar */}
-      <main className="flex-grow flex flex-col items-center justify-center p-4 pt-24 relative z-10">
-        
-        {/* Tool Card */}
-        <div className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/40 p-8">
-          
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-700">
-              <svg className="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+      <section className="px-4 pb-20">
+        <div className="mx-auto max-w-3xl">
+          <div
+            onDrop={handleDrop}
+            onDragOver={(event) => event.preventDefault()}
+            className="rounded-3xl border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/50 md:p-6"
+          >
+            <div className="flex min-h-[260px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 px-6 text-center transition hover:border-orange-500 hover:bg-orange-50/30">
+              <div className="mb-5 flex h-18 w-18 items-center justify-center rounded-2xl bg-orange-50 p-5">
+                <Upload className="h-9 w-9 text-orange-600" />
+              </div>
+              <h2 className="text-xl font-bold text-slate-800 md:text-2xl">Upload your PDFs</h2>
+              <p className="mt-2 text-slate-500">Select two or more files, or drag and drop them here</p>
+              <p className="mt-2 text-sm text-slate-400">PDF files only, maximum 50MB per file</p>
+              <label className="mt-7 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-orange-600 px-7 py-3.5 font-semibold text-white shadow-lg shadow-orange-600/20 transition hover:bg-orange-700">
+                <Upload className="h-5 w-5" />
+                Select PDFs
+                <input type="file" accept="application/pdf,.pdf" multiple onChange={handleInputChange} className="hidden" />
+              </label>
             </div>
-            <h2 className="text-2xl font-bold tracking-tight mb-2">Merge PDF files</h2>
-            <p className="text-slate-400 text-sm">Combine multiple PDFs into a single document seamlessly.</p>
           </div>
 
-          {/* Drop Zone */}
-          <label className="group cursor-pointer block w-full">
-            <input
-              ref={inputRef}
-              type="file"
-              multiple
-              accept=".pdf"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            <div className="border-2 border-dashed border-slate-700 group-hover:border-purple-500 group-hover:bg-slate-800/50 rounded-xl p-10 text-center transition-all duration-300 flex flex-col items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-slate-800 group-hover:bg-purple-500/20 flex items-center justify-center transition-colors">
-                <svg className="w-6 h-6 text-slate-400 group-hover:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-              </div>
-              <p className="text-slate-300 font-medium group-hover:text-white transition-colors">Click to upload or drag & drop</p>
-              <span className="text-xs text-slate-500">PDF files only</span>
+          {error && (
+            <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700">
+              {error}
             </div>
-          </label>
+          )}
 
-          {/* File List */}
           {files.length > 0 && (
-            <div className="mt-6 space-y-3 max-h-64 overflow-y-auto custom-scrollbar pr-1">
-              {files.map((f, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-slate-600 transition-all group/item">
-                  <div className="flex items-center gap-3 overflow-hidden">
-                    <div className="w-10 h-10 rounded bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-white truncate w-40 sm:w-64">{f.name}</p>
-                      <p className="text-xs text-slate-500">{formatSize(f.size)}</p>
-                    </div>
+            <div className="mt-6 space-y-6">
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-xl font-bold text-slate-800">Files to merge</h2>
+                    <p className="mt-1 text-sm text-slate-500">Files are merged in the order shown below.</p>
                   </div>
-                  <button 
-                    onClick={() => removeFile(i)} 
-                    className="w-8 h-8 flex items-center justify-center rounded-full text-slate-500 hover:text-white hover:bg-red-500/20 hover:text-red-400 transition-colors opacity-0 group-hover/item:opacity-100 focus:opacity-100"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <span className="rounded-full bg-orange-50 px-3 py-1 text-sm font-bold text-orange-700">{files.length} files</span>
+                    <button type="button" onClick={clearAll} className="text-sm font-semibold text-slate-500 transition hover:text-red-600">Clear all</button>
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
 
-          {/* Actions */}
-          <div className="mt-8 flex gap-3">
-            {files.length > 0 && (
-              <button 
-                onClick={clearAll} 
-                className="px-6 py-3.5 rounded-xl text-slate-400 font-medium hover:text-white hover:bg-slate-800 transition-colors text-sm"
-              >
-                Clear All
-              </button>
-            )}
-            <button
-              onClick={handleMerge}
-              disabled={files.length < 2 || merging}
-              className={`flex-1 py-3.5 rounded-xl font-semibold text-white transition-all shadow-lg ${
-                files.length < 2 || merging
-                  ? "bg-slate-700 cursor-not-allowed opacity-50"
-                  : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:shadow-indigo-500/25 hover:-translate-y-0.5 active:translate-y-0"
-              }`}
-            >
-              {merging ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Processing...
-                </span>
-              ) : (
-                "Merge PDF Files"
-              )}
-            </button>
-          </div>
-
-          {/* Status Badge */}
-          {done && (
-            <div className="mt-6 flex items-center justify-center gap-2 text-green-400 text-sm bg-green-500/10 border border-green-500/20 py-2 rounded-lg animate-in fade-in slide-in-from-bottom-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-              <span>Download started successfully!</span>
-            </div>
-          )}
-        </div>
-      </main>
-
-      {/* --- Footer --- */}
-      <footer className="border-t border-white/10 bg-slate-950 pt-12 pb-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            
-            {/* Brand Column */}
-            <div className="space-y-4">
-              <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <div className="mt-5 space-y-3">
+                  {files.map((file, index) => (
+                    <div key={`${file.name}-${index}`} className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-orange-100 text-xs font-bold text-orange-700">{index + 1}</span>
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-50"><FileText className="h-5 w-5 text-red-500" /></div>
+                        <div className="min-w-0"><p className="truncate text-sm font-semibold text-slate-700">{file.name}</p><p className="mt-1 text-xs text-slate-500">{formatSize(file.size)}</p></div>
+                      </div>
+                      <button type="button" onClick={() => removeFile(index)} aria-label={`Remove ${file.name}`} className="shrink-0 rounded-lg p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-600"><X className="h-4 w-4" /></button>
+                    </div>
+                  ))}
                 </div>
-                <span>PDFSnap</span>
-              </Link>
-              <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
-                Making document management easy, secure, and accessible for everyone.
-              </p>
-            </div>
-
-            {/* Tools Links */}
-            <div>
-              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider text-slate-500">Popular Tools</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link href="/merge-pdf" className="hover:text-purple-400 transition-colors">Merge PDF</Link></li>
-                <li><Link href="/compress-pdf" className="hover:text-purple-400 transition-colors">Compress PDF</Link></li>
-                <li><Link href="/split-pdf" className="hover:text-purple-400 transition-colors">Split PDF</Link></li>
-                <li><Link href="/pdf-to-word" className="hover:text-purple-400 transition-colors">PDF to Word</Link></li>
-              </ul>
-            </div>
-
-            {/* Company Links */}
-            <div>
-              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider text-slate-500">Company</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link href="#" className="hover:text-purple-400 transition-colors">About Us</Link></li>
-                <li><Link href="#" className="hover:text-purple-400 transition-colors">Pricing</Link></li>
-                <li><Link href="#" className="hover:text-purple-400 transition-colors">Contact</Link></li>
-                <li><Link href="#" className="hover:text-purple-400 transition-colors">Terms of Service</Link></li>
-              </ul>
-            </div>
-
-            {/* Social / Newsletter */}
-            <div>
-              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider text-slate-500">Connect</h4>
-              <div className="flex gap-4 mb-4">
-                <a href="#" className="w-10 h-10 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-purple-500 transition-all">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
-                </a>
-                <a href="#" className="w-10 h-10 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-purple-500 transition-all">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                </a>
               </div>
-            </div>
-          </div>
 
-          {/* Bottom Bar */}
-          <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-slate-500 text-sm">
-              &copy; {new Date().getFullYear()} PDFSnap Inc. All rights reserved.
-            </p>
-            <div className="flex gap-6 text-sm text-slate-500">
-              <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link href="#" className="hover:text-white transition-colors">Cookie Policy</Link>
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-xl font-bold text-slate-800">Ready to merge</h2>
+                    <p className="mt-1 text-sm text-slate-500">Your combined file will be downloaded as merged.pdf.</p>
+                  </div>
+                  <CheckCircle2 className="h-6 w-6 shrink-0 text-emerald-500" />
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleMerge}
+                disabled={files.length < 2 || merging}
+                className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-orange-500 to-red-600 px-6 py-4 text-lg font-bold text-white shadow-xl shadow-orange-500/20 transition hover:from-orange-600 hover:to-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {merging ? <><Loader2 className="h-6 w-6 animate-spin" />Merging PDFs...</> : <><Combine className="h-6 w-6" />Merge PDF files</>}
+              </button>
+
+              {files.length < 2 && <p className="text-center text-sm text-amber-600">Add at least two PDF files to merge them.</p>}
+              {done && <div className="flex items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 py-3 text-sm font-semibold text-emerald-700"><CheckCircle2 className="h-4 w-4" />Your merged PDF downloaded successfully.</div>}
+              <p className="text-center text-sm text-slate-400">Your PDFs are processed directly in your browser. No files are uploaded to our server.</p>
             </div>
-          </div>
+          )}
         </div>
-      </footer>
-
-    </div>
+      </section>
+    </main>
   );
 }

@@ -1,11 +1,20 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
-import { compressPDF } from "../../utils/compressPdf"; // Keep your existing logic
-import { saveAs } from "file-saver";            // Keep your existing logic
-import Link from "next/link";
-import Navbar from "../components/Navbar";
+import { useState } from "react";
+import {
+  CheckCircle2,
+  Download,
+  FileText,
+  Loader2,
+  Minimize2,
+  Upload,
+  X,
+} from "lucide-react";
+import { saveAs } from "file-saver";
+import { compressPDF } from "../../utils/compressPdf";
+
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
+const compressionLevels = ["low", "medium", "high"];
 
 export default function CompressPDF() {
   const [file, setFile] = useState(null);
@@ -14,258 +23,204 @@ export default function CompressPDF() {
   const [originalSize, setOriginalSize] = useState(null);
   const [compressedSize, setCompressedSize] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
-  const onDrop = useCallback((acceptedFiles) => {
-    const selected = acceptedFiles[0];
-    setFile(selected);
-    setOriginalSize((selected.size / 1024).toFixed(2));
-    setCompressedSize(null); // Reset previous result
+  const handleFile = (selectedFile) => {
+    if (!selectedFile) return;
+
+    setError("");
     setSuccess(false);
-  }, []);
+    setCompressedSize(null);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: { "application/pdf": [".pdf"] },
-    onDrop,
-    multiple: false,
-  });
+    if (
+      selectedFile.type !== "application/pdf" &&
+      !selectedFile.name.toLowerCase().endsWith(".pdf")
+    ) {
+      setFile(null);
+      setOriginalSize(null);
+      setError("Please select a valid PDF file.");
+      return;
+    }
+
+    if (selectedFile.size > MAX_FILE_SIZE) {
+      setFile(null);
+      setOriginalSize(null);
+      setError("Maximum file size is 50MB.");
+      return;
+    }
+
+    setFile(selectedFile);
+    setOriginalSize(selectedFile.size);
+  };
+
+  const handleInputChange = (event) => {
+    handleFile(event.target.files?.[0]);
+    event.target.value = "";
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    handleFile(event.dataTransfer.files?.[0]);
+  };
+
+  const clearFile = () => {
+    setFile(null);
+    setOriginalSize(null);
+    setCompressedSize(null);
+    setSuccess(false);
+    setError("");
+  };
 
   const handleCompress = async () => {
-    if (!file) return alert("Upload PDF first");
+    if (!file || loading) return;
 
     setLoading(true);
     setSuccess(false);
+    setError("");
 
     try {
       const compressed = await compressPDF(file, quality);
-      setCompressedSize((compressed.size / 1024).toFixed(2));
-      saveAs(compressed, "compressed.pdf");
+      setCompressedSize(compressed.size);
+      saveAs(compressed, `${file.name.replace(/\.pdf$/i, "")}-compressed.pdf`);
       setSuccess(true);
-    } catch (error) {
-      console.error("Compression failed", error);
-      alert("Compression failed. Please try again.");
+    } catch (compressionError) {
+      console.error("Compression failed:", compressionError);
+      setError("Compression failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Helper for readable quality label
-  const getQualityLabel = (q) => {
-    switch (q) {
-      case "low": return "High Quality";
-      case "medium": return "Standard";
-      case "high": return "Extreme";
-      default: return q;
-    }
+  const formatSize = (bytes) =>
+    bytes < 1024 * 1024
+      ? `${(bytes / 1024).toFixed(1)} KB`
+      : `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+
+  const getQualityLabel = (level) => {
+    if (level === "low") return "High quality";
+    if (level === "medium") return "Balanced";
+    return "Smallest file";
   };
 
+  const reduction = originalSize && compressedSize
+    ? Math.max(0, ((1 - compressedSize / originalSize) * 100).toFixed(0))
+    : null;
+
   return (
-    <div className="min-h-screen bg-slate-601 text-white font-sans flex flex-col relative overflow-hidden selection:bg-purple-500 selection:text-white">
-      
-      {/* --- Background Ambient Glow --- */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-indigo-600/20 blur-[120px] rounded-full" />
-      </div>
-
-      {/* --- Navigation --- */}
-       <Navbar />
-
-      {/* --- Main Content --- */}
-      <main className="flex-grow flex flex-col items-center justify-center p-4 pt-24 relative z-10">
-        
-        <div className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/40 p-8">
-          
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-700">
-              <svg className="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight mb-2">Compress PDF Files</h2>
-            <p className="text-slate-400 text-sm">Reduce file size while maintaining the best possible quality.</p>
+    <main className="min-h-screen bg-slate-50 text-slate-900">
+      <section className="px-4 pb-10 pt-28">
+        <div className="mx-auto max-w-5xl text-center">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-green-100 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700">
+            <Minimize2 className="h-4 w-4" />
+            Free PDF Tool
           </div>
+          <h1 className="text-4xl font-extrabold tracking-tight md:text-5xl">
+            Compress <span className="bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">PDF</span>
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-500">
+            Reduce your PDF file size while keeping the best possible document quality.
+          </p>
+        </div>
+      </section>
 
-          {/* Drop Zone */}
-          <div
-            {...getRootProps()}
-            className={`
-              relative w-full border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all duration-300 flex flex-col items-center gap-4
-              ${isDragActive 
-                ? "border-indigo-500 bg-indigo-500/10" 
-                : "border-slate-700 hover:border-indigo-500 hover:bg-slate-800/50"
-              }
-            `}
-          >
-            <input {...getInputProps()} />
-            
-            {file ? (
-              // File Preview State
-              <div className="flex items-center gap-4 bg-slate-800/80 px-6 py-3 rounded-lg border border-slate-700 w-full max-w-md">
-                <div className="w-10 h-10 rounded bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+      <section className="px-4 pb-20">
+        <div className="mx-auto max-w-3xl">
+          {!file && (
+            <div
+              onDrop={handleDrop}
+              onDragOver={(event) => event.preventDefault()}
+              className="rounded-3xl border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/50 md:p-6"
+            >
+              <div className="flex min-h-[330px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 px-6 text-center transition hover:border-green-500 hover:bg-green-50/30">
+                <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-green-50">
+                  <Upload className="h-9 w-9 text-green-600" />
                 </div>
-                <div className="text-left overflow-hidden">
-                  <p className="text-sm font-medium text-white truncate max-w-[200px]">{file.name}</p>
-                  <p className="text-xs text-slate-400">{originalSize} KB</p>
+                <h2 className="text-xl font-bold text-slate-800 md:text-2xl">Upload your PDF</h2>
+                <p className="mt-2 text-slate-500">Drag and drop your PDF here or select a file</p>
+                <p className="mt-2 text-sm text-slate-400">PDF files only, maximum 50MB</p>
+                <label className="mt-7 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-green-600 px-7 py-3.5 font-semibold text-white shadow-lg shadow-green-600/20 transition hover:bg-green-700">
+                  <Upload className="h-5 w-5" />
+                  Select PDF
+                  <input type="file" accept="application/pdf,.pdf" onChange={handleInputChange} className="hidden" />
+                </label>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700">
+              {error}
+            </div>
+          )}
+
+          {file && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="flex min-w-0 items-center gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-red-50">
+                    <FileText className="h-6 w-6 text-red-500" />
+                  </div>
+                  <div className="min-w-0">
+                    <h2 className="truncate font-bold text-slate-800">{file.name}</h2>
+                    <p className="mt-1 text-sm text-slate-500">{formatSize(originalSize)} • Ready to compress</p>
+                  </div>
                 </div>
-                <button 
-                   onClick={(e) => { e.stopPropagation(); setFile(null); setOriginalSize(null); setCompressedSize(null); }}
-                   className="ml-auto text-slate-500 hover:text-white"
+                <button
+                  type="button"
+                  onClick={clearFile}
+                  className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                  <X className="h-4 w-4" />
+                  Remove
                 </button>
               </div>
-            ) : (
-              // Empty State
-              <>
-                <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                </div>
-                <div>
-                  <p className="text-slate-200 font-medium">Click to upload or drag & drop</p>
-                  <p className="text-xs text-slate-500 mt-1">Maximum file size 50MB</p>
-                </div>
-              </>
-            )}
-          </div>
 
-          {/* Compression Level Selector */}
-          {file && (
-            <div className="mt-8 space-y-3">
-              <label className="text-sm font-semibold text-slate-300 block mb-2">Compression Level</label>
-              <div className="grid grid-cols-3 gap-3">
-                {["low", "medium", "high"].map((level) => (
-                  <button
-                    key={level}
-                    onClick={() => setQuality(level)}
-                    className={`
-                      py-3 px-4 rounded-lg text-sm font-medium transition-all border relative overflow-hidden
-                      ${quality === level 
-                        ? "bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-900/40" 
-                        : "bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-white"
-                      }
-                    `}
-                  >
-                    <span className="relative z-10">
-                      <div className="block text-xs opacity-70 mb-0.5 uppercase tracking-wider">{level}</div>
-                      <div className="block">{getQualityLabel(level)}</div>
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Action Button */}
-          <button
-            onClick={handleCompress}
-            disabled={!file || loading}
-            className={`
-              w-full mt-8 py-3.5 rounded-xl font-semibold text-white transition-all shadow-lg
-              ${!file || loading
-                ? "bg-slate-700 cursor-not-allowed opacity-50"
-                : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:shadow-emerald-500/25 hover:-translate-y-0.5 active:translate-y-0"
-              }
-            `}
-          >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Compressing...
-              </span>
-            ) : (
-              "Compress PDF Now"
-            )}
-          </button>
-
-          {/* Result */}
-          {compressedSize && (
-            <div className="mt-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center justify-between animate-in fade-in slide-in-from-bottom-2">
-              <div className="flex items-center gap-3">
-                <div className="bg-emerald-500/20 p-2 rounded-full">
-                  <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-xl font-bold text-slate-800">Choose compression level</h2>
+                    <p className="mt-1 text-sm text-slate-500">Select the balance between quality and file size.</p>
+                  </div>
+                  <Minimize2 className="h-6 w-6 shrink-0 text-green-600" />
                 </div>
-                <div>
-                  <p className="text-sm font-bold text-white">Compression Complete!</p>
-                  <p className="text-xs text-slate-400">Reduced from {originalSize} KB to {compressedSize} KB</p>
+                <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  {compressionLevels.map((level) => (
+                    <button
+                      key={level}
+                      type="button"
+                      onClick={() => setQuality(level)}
+                      className={`rounded-xl border px-4 py-3 text-left transition ${quality === level ? "border-green-500 bg-green-50 text-green-800 shadow-sm" : "border-slate-200 bg-white text-slate-600 hover:border-green-300 hover:bg-green-50/40"}`}
+                    >
+                      <span className="block text-sm font-bold capitalize">{level}</span>
+                      <span className="mt-1 block text-xs text-slate-500">{getQualityLabel(level)}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
-              <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded">
-                -{((1 - (compressedSize / originalSize)) * 100).toFixed(0)}%
-              </span>
+
+              <button
+                type="button"
+                onClick={handleCompress}
+                disabled={loading}
+                className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-green-600 to-teal-600 px-6 py-4 text-lg font-bold text-white shadow-xl shadow-green-500/20 transition hover:from-green-700 hover:to-teal-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loading ? <><Loader2 className="h-6 w-6 animate-spin" />Compressing PDF...</> : <><Download className="h-6 w-6" />Compress and download PDF</>}
+              </button>
+
+              {success && compressedSize && (
+                <div className="flex items-center justify-between gap-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 shrink-0" />
+                    <span><strong>Compression complete.</strong> {formatSize(originalSize)} to {formatSize(compressedSize)}</span>
+                  </div>
+                  <span className="shrink-0 font-bold">-{reduction}%</span>
+                </div>
+              )}
+              <p className="text-center text-sm text-slate-400">Your PDF is processed directly in your browser. No files are uploaded to our server.</p>
             </div>
           )}
         </div>
-      </main>
-
-      {/* --- Footer --- */}
-      <footer className="border-t border-white/10 bg-slate-950 pt-12 pb-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            
-            {/* Brand Column */}
-            <div className="space-y-4">
-              <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                </div>
-                <span>PDFSnap</span>
-              </Link>
-              <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
-                Making document management easy, secure, and accessible for everyone.
-              </p>
-            </div>
-
-            {/* Tools Links */}
-            <div>
-              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider text-slate-500">Popular Tools</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link href="/merge-pdf" className="hover:text-purple-400 transition-colors">Merge PDF</Link></li>
-                <li><Link href="/compress-pdf" className="hover:text-purple-400 transition-colors">Compress PDF</Link></li>
-                <li><Link href="/split-pdf" className="hover:text-purple-400 transition-colors">Split PDF</Link></li>
-                <li><Link href="/pdf-to-word" className="hover:text-purple-400 transition-colors">PDF to Word</Link></li>
-              </ul>
-            </div>
-
-            {/* Company Links */}
-            <div>
-              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider text-slate-500">Company</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link href="#" className="hover:text-purple-400 transition-colors">About Us</Link></li>
-                <li><Link href="#" className="hover:text-purple-400 transition-colors">Pricing</Link></li>
-                <li><Link href="#" className="hover:text-purple-400 transition-colors">Contact</Link></li>
-                <li><Link href="/privacy-policy" className="hover:text-purple-400 transition-colors">Privacy Policy</Link></li>
-              </ul>
-            </div>
-
-            {/* Social / Newsletter */}
-            <div>
-              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider text-slate-500">Connect</h4>
-              <div className="flex gap-4 mb-4">
-                <a href="#" className="w-10 h-10 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-purple-500 transition-all">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
-                </a>
-                <a href="#" className="w-10 h-10 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-purple-500 transition-all">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Bar */}
-          <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-slate-500 text-sm">
-              &copy; {new Date().getFullYear()} PDFSnap Inc. All rights reserved.
-            </p>
-            <div className="flex gap-6 text-sm text-slate-500">
-              <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link href="#" className="hover:text-white transition-colors">Cookie Policy</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-    </div>
+      </section>
+    </main>
   );
 }
