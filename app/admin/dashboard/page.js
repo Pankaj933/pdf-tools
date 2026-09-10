@@ -29,7 +29,7 @@ export default function AdminDashboard() {
     const loadDashboardData = async () => {
       const { data, error: blogsError } = await supabase
         .from("blogs")
-        .select("id, title, category, status, created_at")
+        .select("id, title, category, status, created_at, views")
         .order("created_at", { ascending: false });
 
       if (blogsError) {
@@ -54,10 +54,11 @@ export default function AdminDashboard() {
 
   const publishedCount = blogs.filter((blog) => blog.status === "published").length;
   const categoryCount = new Set(blogs.map((blog) => blog.category)).size;
+  const totalViews = blogs.reduce((total, blog) => total + (blog.views || 0), 0);
   const recentPosts = blogs.slice(0, 4).map((blog) => ({
     ...blog,
     status: blog.status === "published" ? "Published" : "Draft",
-    views: "0",
+    views: (blog.views || 0).toLocaleString(),
     time: formatRelativeTime(blog.created_at),
   }));
   const activity = blogs.slice(0, 3).map((blog) => ({
@@ -76,9 +77,9 @@ export default function AdminDashboard() {
     },
     {
       title: "Total Views",
-      value: "0",
-      change: "N/A",
-      detail: "views not tracked",
+      value: totalViews.toLocaleString(),
+      change: "Live",
+      detail: "from database",
       tone: "purple",
       icon: Eye,
     },

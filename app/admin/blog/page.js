@@ -25,7 +25,7 @@ export default function BlogPage() {
     const loadBlogs = async () => {
       const { data, error: blogsError } = await supabase
         .from("blogs")
-        .select("id, title, category, status, created_at, image")
+        .select("id, title, category, status, created_at, image, views")
         .order("created_at", { ascending: false });
 
       if (blogsError) {
@@ -221,7 +221,7 @@ export default function BlogPage() {
                   <td>
                     <div className="views">
                       <Eye size={16} />
-                      0
+                      {blog.views || 0}
                     </div>
                   </td>
 

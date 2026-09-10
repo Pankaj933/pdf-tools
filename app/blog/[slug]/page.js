@@ -15,7 +15,8 @@ export async function generateMetadata({ params }) {
 export default async function BlogDetailPage({ params }) {
   const { slug } = await params;
   const supabase = await createClient();
-  const { data: blog } = await supabase.from("blogs").select("title, slug, category, excerpt, image, content, created_at").eq("slug", slug).eq("status", "published").maybeSingle();
+  await supabase.rpc("increment_blog_views", { blog_slug: slug });
+  const { data: blog } = await supabase.from("blogs").select("title, slug, category, excerpt, image, content, created_at, views").eq("slug", slug).eq("status", "published").maybeSingle();
 
   if (!blog) notFound();
 
