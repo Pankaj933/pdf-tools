@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   FileText,
@@ -10,9 +10,17 @@ import {
   ArrowLeft,
   LogOut,
 } from "lucide-react";
+import { supabase } from "../../../lib/supabase";
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.replace("/admin/login");
+    router.refresh();
+  };
 
   const menuItems = [
     {
@@ -130,6 +138,7 @@ export default function AdminSidebar() {
 
         <button
           type="button"
+          onClick={handleLogout}
           className="
             w-full
             flex
