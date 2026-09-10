@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   ArrowUpRight,
   BarChart3,
@@ -17,38 +18,83 @@ import {
   Sparkles,
   TrendingUp,
 } from "lucide-react";
+import { supabase } from "../../../lib/supabase";
 
 export default function AdminDashboard() {
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      const { data, error: blogsError } = await supabase
+        .from("blogs")
+        .select("id, title, category, status, created_at")
+        .order("created_at", { ascending: false });
+
+      if (blogsError) {
+        setError(blogsError.message);
+      } else {
+        setBlogs(data || []);
+      }
+
+      setLoading(false);
+    };
+
+    loadDashboardData();
+  }, []);
+
+  const formatRelativeTime = (date) => {
+    const elapsedMinutes = Math.max(1, Math.floor((Date.now() - new Date(date).getTime()) / 60000));
+
+    if (elapsedMinutes < 60) return `${elapsedMinutes} min ago`;
+    if (elapsedMinutes < 1440) return `${Math.floor(elapsedMinutes / 60)} hours ago`;
+    return `${Math.floor(elapsedMinutes / 1440)} days ago`;
+  };
+
+  const publishedCount = blogs.filter((blog) => blog.status === "published").length;
+  const categoryCount = new Set(blogs.map((blog) => blog.category)).size;
+  const recentPosts = blogs.slice(0, 4).map((blog) => ({
+    ...blog,
+    status: blog.status === "published" ? "Published" : "Draft",
+    views: "0",
+    time: formatRelativeTime(blog.created_at),
+  }));
+  const activity = blogs.slice(0, 3).map((blog) => ({
+    label: `${blog.status === "published" ? "Published" : "Saved draft"}: ${blog.title}`,
+    time: formatRelativeTime(blog.created_at),
+  }));
+
   const stats = [
     {
       title: "Total Blogs",
-      value: "24",
-      change: "+12%",
-      detail: "from last month",
+      value: loading ? "..." : String(blogs.length),
+      change: "Live",
+      detail: "from database",
       tone: "blue",
       icon: FileText,
     },
     {
       title: "Total Views",
-      value: "18.4K",
-      change: "+18%",
-      detail: "vs last month",
+      value: "0",
+      change: "N/A",
+      detail: "views not tracked",
       tone: "purple",
       icon: Eye,
     },
     {
       title: "Categories",
-      value: "8",
-      change: "+2",
-      detail: "new this month",
+      value: loading ? "..." : String(categoryCount),
+      change: "Live",
+      detail: "from blog data",
       tone: "green",
       icon: FolderOpen,
     },
     {
       title: "Published",
-      value: "21",
-      change: "+5",
-      detail: "this month",
+      value: loading ? "..." : String(publishedCount),
+      change: "Live",
+      detail: "published blogs",
       tone: "amber",
       icon: TrendingUp,
     },
@@ -76,43 +122,6 @@ export default function AdminDashboard() {
       tone: "green",
       icon: FolderOpen,
     },
-  ];
-
-  const recentPosts = [
-    {
-      title: "How to Compress PDF Without Losing Quality",
-      category: "PDF Tools",
-      status: "Published",
-      time: "2h ago",
-      views: "2,430",
-    },
-    {
-      title: "Best Free PDF Tools for Students",
-      category: "Guides",
-      status: "Published",
-      time: "5h ago",
-      views: "1,820",
-    },
-    {
-      title: "How to Merge Multiple PDF Files",
-      category: "Tutorials",
-      status: "Draft",
-      time: "1d ago",
-      views: "—",
-    },
-    {
-      title: "PDF vs Word: Which One Should You Use?",
-      category: "Education",
-      status: "Published",
-      time: "2d ago",
-      views: "1,240",
-    },
-  ];
-
-  const activity = [
-    { label: "New article published", time: "12 min ago" },
-    { label: "2 new comments received", time: "1 hour ago" },
-    { label: "Monthly traffic increased", time: "3 hours ago" },
   ];
 
   return (
@@ -219,7 +228,9 @@ export default function AdminDashboard() {
             </div>
 
             <div className="divide-y divide-slate-100">
-              {recentPosts.map((post) => (
+              {error ? <p className="p-6 text-sm text-red-600">Unable to load dashboard: {error}</p> : null}
+              {!loading && !error && recentPosts.length === 0 ? <p className="p-6 text-sm text-slate-500">No blogs created yet.</p> : null}
+              {!error && recentPosts.map((post) => (
                 <div key={post.title} className="px-5 py-4 transition hover:bg-slate-50 sm:px-6">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex min-w-0 items-start gap-3">
@@ -321,21 +332,21 @@ export default function AdminDashboard() {
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-200">
                     Performance
                   </p>
-                  <h3 className="mt-2 text-2xl font-bold">18.4%</h3>
+                  <h3 className="mt-2 text-2xl font-bold">Live</h3>
                 </div>
 
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10">
-                  <TrendingUp className="h-5 w-5 text-emerald-300" />
+                  <Eye className="h-5 w-5 text-emerald-300" />
                 </div>
               </div>
 
               <p className="mt-3 text-sm text-blue-100">
-                Your blog traffic is growing steadily this month.
+                Blog counts are synced with your Supabase database.
               </p>
 
               <div className="mt-5 flex items-center gap-2 text-sm font-medium text-emerald-300">
                 <ShieldCheck className="h-4 w-4" />
-                Monthly growth is above target
+                Views analytics are not configured
               </div>
             </div>
           </div>
@@ -351,24 +362,14 @@ export default function AdminDashboard() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-                <TrendingUp className="h-3.5 w-3.5" />
-                +18.4%
+              <div className="flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                <Eye className="h-3.5 w-3.5" />
+                Views not tracked
               </div>
             </div>
 
-            <div className="mt-6 flex items-end gap-3">
-              {[35, 45, 52, 60, 74, 88].map((height, index) => (
-                <div key={index} className="flex flex-1 flex-col items-center gap-2">
-                  <div
-                    className="w-full rounded-t-2xl bg-gradient-to-t from-blue-600 to-indigo-400"
-                    style={{ height: `${height}px` }}
-                  />
-                  <span className="text-[10px] font-medium text-slate-400">
-                    {["J", "F", "M", "A", "M", "J"][index]}
-                  </span>
-                </div>
-              ))}
+            <div className="mt-6 rounded-xl bg-slate-50 p-5 text-sm leading-6 text-slate-500">
+              Add a views or analytics column to the blogs table to display traffic performance here.
             </div>
           </div>
 
@@ -392,6 +393,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               ))}
+              {!loading && !error && activity.length === 0 ? <p className="text-sm text-slate-500">No recent activity.</p> : null}
             </div>
           </div>
         </section>
