@@ -233,7 +233,7 @@ export default function CreateBlogPage() {
     console.log("Blog created successfully:", data);
 
     alert(
-      blogStatus === "Published"
+      blogStatus === "published"
         ? "Blog published successfully!"
         : "Blog saved as draft!"
     );
@@ -325,12 +325,12 @@ export default function CreateBlogPage() {
           <button
             type="button"
             className="save-draft-btn"
-            onClick={() => handleSave("Draft")}
+            onClick={() => handleSave("draft")}
             disabled={saving}
           >
             <Save size={18} />
 
-            {saving && status === "Draft"
+            {saving && status === "draft"
               ? "Saving..."
               : "Save Draft"}
           </button>
@@ -338,12 +338,12 @@ export default function CreateBlogPage() {
           <button
             type="button"
             className="publish-btn"
-            onClick={() => handleSave("Published")}
+            onClick={() => handleSave("published")}
             disabled={saving}
           >
             <Send size={18} />
 
-            {saving && status === "Published"
+            {saving && status === "published"
               ? "Publishing..."
               : "Publish Blog"}
           </button>
@@ -894,9 +894,9 @@ export default function CreateBlogPage() {
 
               <strong
                 className={
-                  status === "Published"
+                  status === "published"
                     ? "status-published"
-                    : status === "Draft"
+                    : status === "draft"
                     ? "status-draft"
                     : ""
                 }
@@ -912,13 +912,13 @@ export default function CreateBlogPage() {
                 type="button"
                 className="save-draft-btn full-width"
                 onClick={() =>
-                  handleSave("Draft")
+                  handleSave("draft")
                 }
                 disabled={saving}
               >
                 <Save size={18} />
 
-                {saving && status === "Draft"
+                {saving && status === "draft"
                   ? "Saving..."
                   : "Save Draft"}
               </button>
@@ -927,13 +927,13 @@ export default function CreateBlogPage() {
                 type="button"
                 className="publish-btn full-width"
                 onClick={() =>
-                  handleSave("Published")
+                  handleSave("published")
                 }
                 disabled={saving}
               >
                 <Send size={18} />
 
-                {saving && status === "Published"
+                {saving && status === "published"
                   ? "Publishing..."
                   : "Publish Blog"}
               </button>
