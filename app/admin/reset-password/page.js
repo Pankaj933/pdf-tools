@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { supabase } from "../../../lib/supabase";
+import { passwordResetClient } from "../../../lib/supabase/password-reset";
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function ResetPassword() {
 
   useEffect(() => {
     const loadRecoverySession = async () => {
-      const { data, error: sessionError } = await supabase.auth.getSession();
+      const { data, error: sessionError } = await passwordResetClient.auth.getSession();
 
       if (sessionError || !data.session) {
         setError(sessionError?.message || "Invalid or expired password reset link.");
@@ -27,7 +27,18 @@ export default function ResetPassword() {
       setSessionReady(true);
     };
 
+    const { data: authListener } = passwordResetClient.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session) {
+          setError("");
+          setSessionReady(true);
+        }
+      }
+    );
+
     loadRecoverySession();
+
+    return () => authListener.subscription.unsubscribe();
   }, []);
 
   const handleSubmit = async (event) => {
@@ -52,7 +63,7 @@ export default function ResetPassword() {
     setLoading(true);
 
     try {
-      const { error: updateError } = await supabase.auth.updateUser({ password });
+      const { error: updateError } = await passwordResetClient.auth.updateUser({ password });
 
       if (updateError) {
         setError(updateError.message);
