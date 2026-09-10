@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Plus,
   Search,
@@ -12,49 +12,46 @@ import {
 } from "lucide-react";
 
 import { useRouter } from "next/navigation";
+import { supabase } from "../../../lib/supabase";
 
 export default function BlogPage() {
   const [search, setSearch] = useState("");
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const blogs = [
-    {
-      id: 1,
-      title: "How to Convert PDF to Word Easily",
-      category: "PDF Tools",
-      status: "Published",
-      views: "1,245",
-      date: "Aug 20, 2026",
-    },
-    {
-      id: 2,
-      title: "Best Free PDF Tools for Students",
-      category: "Guides",
-      status: "Published",
-      views: "980",
-      date: "Aug 18, 2026",
-    },
-    {
-      id: 3,
-      title: "How to Compress PDF Without Losing Quality",
-      category: "PDF Tools",
-      status: "Draft",
-      views: "0",
-      date: "Aug 15, 2026",
-    },
-    {
-      id: 4,
-      title: "Merge Multiple PDF Files Online",
-      category: "Tutorial",
-      status: "Published",
-      views: "2,341",
-      date: "Aug 10, 2026",
-    },
-  ];
+  useEffect(() => {
+    const loadBlogs = async () => {
+      const { data, error: blogsError } = await supabase
+        .from("blogs")
+        .select("id, title, category, status, created_at, image")
+        .order("created_at", { ascending: false });
+
+      if (blogsError) {
+        setError(blogsError.message);
+      } else {
+        setBlogs(data || []);
+      }
+
+      setLoading(false);
+    };
+
+    loadBlogs();
+  }, []);
+
+  const formatDate = (date) =>
+    new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(new Date(date));
 
   const filteredBlogs = blogs.filter((blog) =>
     blog.title.toLowerCase().includes(search.toLowerCase())
   );
+  const publishedCount = blogs.filter((blog) => blog.status === "published").length;
+  const draftCount = blogs.filter((blog) => blog.status === "draft").length;
 
   return (
     <div className="blog-page">
@@ -89,7 +86,7 @@ export default function BlogPage() {
         <div className="blog-stat-card">
           <div>
             <span>Total Blogs</span>
-            <h2>24</h2>
+            <h2>{blogs.length}</h2>
           </div>
 
           <div className="blog-stat-icon blue">
@@ -100,7 +97,7 @@ export default function BlogPage() {
         <div className="blog-stat-card">
           <div>
             <span>Published</span>
-            <h2>21</h2>
+            <h2>{publishedCount}</h2>
           </div>
 
           <div className="blog-stat-icon green">
@@ -111,7 +108,7 @@ export default function BlogPage() {
         <div className="blog-stat-card">
           <div>
             <span>Drafts</span>
-            <h2>3</h2>
+            <h2>{draftCount}</h2>
           </div>
 
           <div className="blog-stat-icon orange">
@@ -166,7 +163,19 @@ export default function BlogPage() {
 
             <tbody>
 
-              {filteredBlogs.map((blog) => (
+              {loading && (
+                <tr>
+                  <td colSpan="6">Loading blogs...</td>
+                </tr>
+              )}
+
+              {error && !loading && (
+                <tr>
+                  <td colSpan="6">Unable to load blogs: {error}</td>
+                </tr>
+              )}
+
+              {!loading && !error && filteredBlogs.map((blog) => (
 
                 <tr key={blog.id}>
 
@@ -174,7 +183,11 @@ export default function BlogPage() {
                     <div className="blog-title-cell">
 
                       <div className="blog-thumbnail">
-                        <FileText size={20} />
+                        {blog.image ? (
+                          <img src={blog.image} alt="" />
+                        ) : (
+                          <FileText size={20} />
+                        )}
                       </div>
 
                       <span>{blog.title}</span>
@@ -194,12 +207,12 @@ export default function BlogPage() {
 
                     <span
                       className={
-                        blog.status === "Published"
+                        blog.status === "published"
                           ? "status published"
                           : "status draft"
                       }
                     >
-                      {blog.status}
+                      {blog.status === "published" ? "Published" : "Draft"}
                     </span>
 
                   </td>
@@ -208,12 +221,12 @@ export default function BlogPage() {
                   <td>
                     <div className="views">
                       <Eye size={16} />
-                      {blog.views}
+                      0
                     </div>
                   </td>
 
 
-                  <td>{blog.date}</td>
+                  <td>{formatDate(blog.created_at)}</td>
 
 
                   <td>
@@ -255,7 +268,7 @@ export default function BlogPage() {
         </div>
 
 
-        {filteredBlogs.length === 0 && (
+        {!loading && !error && filteredBlogs.length === 0 && (
 
           <div className="no-blogs">
             <FileText size={35} />
