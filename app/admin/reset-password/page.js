@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -12,7 +12,30 @@ export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sessionReady, setSessionReady] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const exchangeRecoveryCode = async () => {
+      const code = new URLSearchParams(window.location.search).get("code");
+
+      if (!code) {
+        setError("Invalid or expired password reset link.");
+        return;
+      }
+
+      const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+
+      if (exchangeError) {
+        setError(exchangeError.message);
+        return;
+      }
+
+      setSessionReady(true);
+    };
+
+    exchangeRecoveryCode();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -25,6 +48,11 @@ export default function ResetPassword() {
 
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
+      return;
+    }
+
+    if (!sessionReady) {
+      setError("Please wait while the reset link is being verified.");
       return;
     }
 
@@ -64,8 +92,8 @@ export default function ResetPassword() {
             <label htmlFor="confirm-password" className="mb-2 mt-5 block text-sm font-semibold text-slate-700">Confirm password</label>
             <input id="confirm-password" type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} minLength={8} required className="box-border block h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10" />
             {error ? <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div> : null}
-            <button type="submit" disabled={loading} className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-bold text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-70">
-              {loading ? "Updating..." : "Update password"}
+            <button type="submit" disabled={loading || !sessionReady} className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-bold text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-70">
+              {loading ? "Updating..." : sessionReady ? "Update password" : "Verifying link..."}
               <ArrowRight className="h-5 w-5" />
             </button>
           </form>
