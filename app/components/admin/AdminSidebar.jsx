@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
@@ -63,7 +64,14 @@ export default function AdminSidebar() {
       style={{ width: "256px", height: "100vh" }}
     >
       {/* Logo */}
-      <div className="h-20 px-6 flex items-center border-b border-white/10">
+      <div className="h-20 px-6 flex items-center gap-3 border-b border-white/10">
+        <Image
+          src="/pdfsnap-icon.png"
+          alt="PDFSnap"
+          width={40}
+          height={40}
+          className="h-10 w-10 object-contain"
+        />
         <div>
           <h1 className="text-xl font-bold">
             PDF<span className="text-blue-500">Snap</span>
