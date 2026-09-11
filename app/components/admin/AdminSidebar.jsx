@@ -66,7 +66,7 @@ export default function AdminSidebar() {
       {/* Logo */}
       <div className="h-20 px-6 flex items-center gap-3 border-b border-white/10">
         <Image
-          src="/pdfsnap-icon.png"
+          src="/pdflogo-removebg-preview.png"
           alt="PDFSnap"
           width={40}
           height={40}

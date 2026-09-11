@@ -17,7 +17,7 @@ export default function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.7fr_1fr_1fr_1fr]">
           <div>
             <Link href="/" className="group inline-flex items-center gap-3">
-              <Image src="/pdfsnap-icon.png" alt="PDFSnap" width={48} height={48} className="h-12 w-12 object-contain transition-transform group-hover:scale-105" />
+              <Image src="/pdflogo-removebg-preview.png" alt="PDFSnap" width={48} height={48} className="h-12 w-12 object-contain transition-transform group-hover:scale-105" />
               <span className="flex flex-col">
                 <span className="text-2xl font-bold tracking-tight text-white">PDFSnap</span>
                 <span className="mt-1 text-[7px] font-semibold tracking-[0.18em] text-blue-300">SNAP. CONVERT. DONE.</span>
