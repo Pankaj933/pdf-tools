@@ -1,182 +1,70 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
+
   return (
-    <footer className="bg-white border-t border-slate-100 pt-16 pb-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        {/* Footer Main */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
-
-          {/* Brand */}
-          <div className="col-span-2 lg:col-span-2">
-            <Link href="/" className="inline-flex items-center gap-3 mb-4">
-              <img
-                src="/pdflogo.png"
-                alt="PDFSnap"
-                className="w-12 h-12 object-contain"
-              />
-
-              <div className="flex flex-col">
-                <span className="text-2xl font-bold tracking-tight text-slate-900">
-                  PDFSnap
-                </span>
-
-                <span className="text-[10px] font-bold tracking-[0.25em] text-[#06456b]">
-                  SNAP. CONVERT. DONE.
-                </span>
-              </div>
+    <footer className="border-t border-slate-800 bg-slate-950 text-white">
+      <div className="mx-auto max-w-7xl px-6 py-14 sm:px-10 lg:px-8">
+        <div className="grid gap-12 lg:grid-cols-[1.7fr_1fr_1fr_1fr]">
+          <div>
+            <Link href="/" className="group inline-flex items-center gap-3">
+              <Image src="/pdfsnap-icon.png" alt="PDFSnap" width={48} height={48} className="h-12 w-12 object-contain transition-transform group-hover:scale-105" />
+              <span className="flex flex-col">
+                <span className="text-2xl font-bold tracking-tight text-white">PDFSnap</span>
+                <span className="mt-1 text-[7px] font-semibold tracking-[0.18em] text-blue-300">SNAP. CONVERT. DONE.</span>
+              </span>
             </Link>
-
-            <p className="text-slate-500 text-sm leading-relaxed max-w-sm">
-              Making document management easy, secure, and accessible.
-            </p>
+            <p className="mt-6 max-w-sm text-sm leading-7 text-slate-400">Simple, secure tools for the documents you work with every day.</p>
+            <Link href="/#tools" className="mt-7 inline-flex rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-500">Explore tools</Link>
           </div>
 
-          {/* Product */}
-          <div>
-            <h4 className="font-bold text-slate-900 mb-4">
-              Product
-            </h4>
-
-            <ul className="space-y-2 text-sm text-slate-500">
-              <li>
-                <Link
-                  href="/merge-pdf"
-                  className="hover:text-blue-600 transition-colors"
-                >
-                  Merge PDF
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/compress-pdf"
-                  className="hover:text-blue-600 transition-colors"
-                >
-                  Compress PDF
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/split-pdf"
-                  className="hover:text-blue-600 transition-colors"
-                >
-                  Split PDF
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/jpg-to-pdf"
-                  className="hover:text-blue-600 transition-colors"
-                >
-                  JPG to PDF
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/ai-tools"
-                  className="hover:text-purple-600 transition-colors"
-                >
-                  AI Tools
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h4 className="font-bold text-slate-900 mb-4">
-              Company
-            </h4>
-
-            <ul className="space-y-2 text-sm text-slate-500">
-              <li>
-                <Link
-                  href="/about"
-                  className="hover:text-blue-600 transition-colors"
-                >
-                  About Us
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/contact"
-                  className="hover:text-blue-600 transition-colors"
-                >
-                  Contact
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/pricing"
-                  className="hover:text-blue-600 transition-colors"
-                >
-                  Pricing
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h4 className="font-bold text-slate-900 mb-4">
-              Legal
-            </h4>
-
-            <ul className="space-y-2 text-sm text-slate-500">
-              <li>
-                <Link
-                  href="/privacy-policy"
-                  className="hover:text-blue-600 transition-colors"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/terms-of-service"
-                  className="hover:text-blue-600 transition-colors"
-                >
-                  Terms of Service
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <FooterColumn title="Product" links={[
+            ["Merge PDF", "/merge-pdf"],
+            ["Compress PDF", "/compress-pdf"],
+            ["Split PDF", "/split-pdf"],
+            ["JPG to PDF", "/jpg-to-pdf"],
+            ["AI Tools", "/#ai-features"],
+          ]} />
+          <FooterColumn title="Company" links={[
+            ["About Us", "/about"],
+            ["Contact", "/contact"],
+            ["Pricing", "/pricing"],
+          ]} />
+          <FooterColumn title="Legal" links={[
+            ["Privacy Policy", "/privacy-policy"],
+            ["Terms of Service", "/terms-of-service"],
+          ]} />
         </div>
 
-        {/* Bottom */}
-        <div className="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-slate-400">
-            © {new Date().getFullYear()} PDFSnap Inc. All rights reserved.
-          </p>
-
-          <div className="flex items-center gap-6 text-sm text-slate-400">
-            <Link
-              href="/privacy-policy"
-              className="hover:text-blue-600 transition-colors"
-            >
-              Privacy Policy
-            </Link>
-
-            <Link
-              href="/terms-of-service"
-              className="hover:text-blue-600 transition-colors"
-            >
-              Terms
-            </Link>
-          </div>
+        <div className="mt-14 flex flex-col gap-4 border-t border-white/10 pt-7 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+          <p>© 2026 PDFSnap Inc. All rights reserved.</p>
+          <p className="text-slate-600">Built for faster document work.</p>
         </div>
-
       </div>
     </footer>
+  );
+}
+
+function FooterColumn({ title, links }) {
+  return (
+    <div>
+      <h2 className="text-sm font-bold uppercase tracking-[0.16em] text-slate-300">{title}</h2>
+      <ul className="mt-5 space-y-3 text-sm text-slate-400">
+        {links.map(([label, href]) => (
+          <li key={href}>
+            <Link href={href} className="transition-colors hover:text-blue-300">{label}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

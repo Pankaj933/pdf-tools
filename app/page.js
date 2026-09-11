@@ -576,55 +576,6 @@ const CTA = () => (
   </section>
 );
 
-const Footer = () => (
-  <footer id="footer" className="bg-white border-t border-slate-100 pt-16 pb-12">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
-        <div className="col-span-2 lg:col-span-2">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
-              <FileText className="text-white w-5 h-5" />
-            </div>
-            <span className="text-xl font-bold text-slate-900">PDFSnap</span>
-          </div>
-          <p className="text-slate-500 text-sm mb-6">Making document management easy, secure, and accessible.</p>
-        </div>
-        <div>
-          <h4 className="font-bold text-slate-900 mb-4">Product</h4>
-          <ul className="space-y-2 text-sm text-slate-500">
-            <li><Link href="/merge-pdf" className="hover:text-blue-600">Merge PDF</Link></li>
-            <li><Link href="/compress-pdf" className="hover:text-blue-600">Compress PDF</Link></li>
-            <li><Link href="/ai-tools" className="hover:text-blue-600">AI Tools</Link></li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="font-bold text-slate-900 mb-4">Company</h4>
-          <ul className="space-y-2 text-sm text-slate-500">
-            <li><Link href="/about" className="hover:text-blue-600">About Us</Link></li>
-            <li><Link href="/pricing" className="hover:text-blue-600">Pricing</Link></li>
-            <li><Link href="/contact" className="hover:text-blue-600">Contact</Link></li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="font-bold text-slate-900 mb-4">Legal</h4>
-          <ul className="space-y-2 text-sm text-slate-500">
-            <li><Link href="/privacy-policy" className="hover:text-blue-600">Privacy Policy</Link></li>
-            <li><Link href="/terms-of-service" className="hover:text-blue-600">Terms</Link></li>
-          </ul>
-        </div>
-      </div>
-      <div className="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
-        <p>&copy; 2026 PDFSnap Inc.</p>
-        {/* <div className="flex gap-4 mt-4 md:mt-0">
-          <Twitter className="w-5 h-5 hover:text-blue-500 cursor-pointer" />
-          <Linkedin className="w-5 h-5 hover:text-blue-500 cursor-pointer" />
-          
-        </div> */}
-      </div>
-    </div>
-  </footer>
-);
-
 // --- Main Page Export ---
 export default function Home() {
   return (
@@ -636,7 +587,6 @@ export default function Home() {
       <WhyUs />
       <FAQ />
       <CTA />
-      <Footer />
     </main>
   );
 }
