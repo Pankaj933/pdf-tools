@@ -234,8 +234,10 @@ export default function BlogPage() {
                     <div className="blog-actions">
 
                       <button
+                        type="button"
                         className="action-btn edit-btn"
                         title="Edit Blog"
+                        onClick={() => router.push(`/admin/blog/create?edit=${blog.id}`)}
                       >
                         <Edit3 size={17} />
                       </button>

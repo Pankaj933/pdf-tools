@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
   Save,
@@ -17,6 +17,9 @@ import { supabase } from "../../../../lib/supabase";
 
 export default function CreateBlogPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
+  const isEditing = Boolean(editId);
 
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
@@ -30,6 +33,42 @@ export default function CreateBlogPage() {
   const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!editId) return;
+
+    const loadBlog = async () => {
+      setError("");
+
+      const { data, error: loadError } = await supabase
+        .from("blogs")
+        .select("id, title, slug, category, excerpt, image, content, seo_title, meta_description, status")
+        .eq("id", editId)
+        .maybeSingle();
+
+      if (loadError) {
+        setError(loadError.message);
+        return;
+      }
+
+      if (!data) {
+        setError("Blog not found.");
+        return;
+      }
+
+      setTitle(data.title || "");
+      setSlug(data.slug || "");
+      setCategory(data.category || "");
+      setExcerpt(data.excerpt || "");
+      setImage(data.image || "");
+      setContent(data.content || "");
+      setSeoTitle(data.seo_title || data.title || "");
+      setMetaDescription(data.meta_description || data.excerpt || "");
+      setStatus((data.status || "").toLowerCase());
+    };
+
+    loadBlog();
+  }, [editId]);
 
   // ----------------------------------------
   // Generate slug
@@ -166,6 +205,7 @@ export default function CreateBlogPage() {
       .from("blogs")
       .select("id")
       .eq("slug", slug)
+      .neq("id", editId || "00000000-0000-0000-0000-000000000000")
       .maybeSingle();
 
     if (slugCheckError) {
@@ -200,30 +240,33 @@ export default function CreateBlogPage() {
 
     console.log("Sending blog data:", blogData);
 
-    // Insert
-    const {
-      data,
-      error: insertError,
-    } = await supabase
-      .from("blogs")
-      .insert([blogData])
-      .select()
-      .single();
+    const { data, error: saveError } = isEditing
+      ? await supabase
+          .from("blogs")
+          .update(blogData)
+          .eq("id", editId)
+          .select()
+          .single()
+      : await supabase
+          .from("blogs")
+          .insert([blogData])
+          .select()
+          .single();
 
-    if (insertError) {
-      console.error("Supabase insert error:", insertError);
+    if (saveError) {
+      console.error("Supabase blog save error:", saveError);
 
-      const insertMessage = getSupabaseErrorMessage(insertError);
+      const insertMessage = getSupabaseErrorMessage(saveError);
 
-      if (isMissingBlogsTableError(insertError)) {
+      if (isMissingBlogsTableError(saveError)) {
         throw new Error(
           "The blogs table does not exist in Supabase yet. Please create the public.blogs table and RLS policies before saving posts."
         );
       }
 
-      if (isRowLevelSecurityError(insertError)) {
+      if (isRowLevelSecurityError(saveError)) {
         throw new Error(
-          "Your Supabase RLS policy is blocking blog inserts. Please sign in as the admin user and run the authenticated-user blogs policy in Supabase."
+          "Your Supabase RLS policy is blocking this blog update. Please sign in as the admin user and check the authenticated-user blogs policy in Supabase."
         );
       }
 
@@ -233,9 +276,11 @@ export default function CreateBlogPage() {
     console.log("Blog created successfully:", data);
 
     alert(
-      blogStatus === "published"
-        ? "Blog published successfully!"
-        : "Blog saved as draft!"
+        isEditing
+          ? "Blog updated successfully!"
+          : blogStatus === "published"
+            ? "Blog published successfully!"
+            : "Blog saved as draft!"
     );
 
     router.push("/admin/blog");
@@ -309,10 +354,12 @@ export default function CreateBlogPage() {
               CONTENT MANAGEMENT
             </p>
 
-            <h1>Create New Blog</h1>
+            <h1>{isEditing ? "Edit Blog" : "Create New Blog"}</h1>
 
             <p>
-              Write and publish a new article for your website.
+              {isEditing
+                ? "Update and publish your website article."
+                : "Write and publish a new article for your website."}
             </p>
           </div>
 
