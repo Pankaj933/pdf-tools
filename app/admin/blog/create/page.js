@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
@@ -15,7 +15,7 @@ import {
 
 import { supabase } from "../../../../lib/supabase";
 
-export default function CreateBlogPage() {
+function BlogEditor() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get("edit");
@@ -1030,5 +1030,13 @@ export default function CreateBlogPage() {
       </div>
 
     </div>
+  );
+}
+
+export default function CreateBlogPage() {
+  return (
+    <Suspense fallback={<div className="create-blog-page">Loading editor...</div>}>
+      <BlogEditor />
+    </Suspense>
   );
 }
