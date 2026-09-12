@@ -245,8 +245,8 @@ function BlogEditor() {
           .from("blogs")
           .update(blogData)
           .eq("id", editId)
-          .select()
-          .single()
+        .select("id")
+        .maybeSingle()
       : await supabase
           .from("blogs")
           .insert([blogData])
@@ -271,6 +271,12 @@ function BlogEditor() {
       }
 
       throw new Error(insertMessage || "Blog could not be saved.");
+    }
+
+    if (isEditing && !data) {
+      throw new Error(
+        "Blog update returned 0 rows. The blog may have been deleted, or your Supabase UPDATE policy is blocking this account."
+      );
     }
 
     console.log("Blog created successfully:", data);
