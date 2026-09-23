@@ -25,6 +25,25 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.admin-product-input {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 11px 12px;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 400;
+  outline: none;
+}
+
+.admin-product-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.12);
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -153,7 +172,7 @@ body {
 
 .blog-page {
   width: 100%;
-  padding: 10px 0 30px;
+  padding: 10px 40px 30px;
   box-sizing: border-box;
 }
 
@@ -611,7 +630,7 @@ body {
 .create-blog-page {
   width: 100%;
   box-sizing: border-box;
-  padding: 10px 0 40px;
+  padding: 10px 40px;
 }
 
 
