@@ -121,10 +121,8 @@ export default function AISummaryPremiumPage() {
   }, []);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const purchasedFromUrl = params.get("paid") === "1";
     const persisted = window.localStorage.getItem(HAS_PURCHASED_KEY) === "1";
-    if (purchasedFromUrl || persisted) {
+    if (persisted) {
       setHasPurchased(true);
     }
   }, []);
@@ -139,10 +137,6 @@ export default function AISummaryPremiumPage() {
   const markPurchased = () => {
     setHasPurchased(true);
     window.localStorage.setItem(HAS_PURCHASED_KEY, "1");
-
-    const url = new URL(window.location.href);
-    url.searchParams.set("paid", "1");
-    window.history.replaceState({}, "", url);
   };
 
   const handleBuyNow = async () => {
