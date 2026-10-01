@@ -144,7 +144,7 @@ const Hero = () => {
             </Link>
 
             <Link 
-              href="#ai-features" 
+              href="/ai-summary" 
               className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:border-purple-300 hover:text-purple-600 transition-all duration-300 hover:-translate-y-1"
             >
               <Sparkles className="mr-2 w-5 h-5 text-purple-600" />

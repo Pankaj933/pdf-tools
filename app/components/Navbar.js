@@ -62,41 +62,7 @@ export default function Navbar() {
                 Tools
               </Link>
 
-              {/* Study Material */}
-              <div
-                className="relative"
-                onMouseEnter={() => setStudyMenuOpen(true)}
-                onMouseLeave={() => setStudyMenuOpen(false)}
-              >
-                <button
-                  type="button"
-                  onClick={() => setStudyMenuOpen((open) => !open)}
-                  className="flex items-center gap-1 text-slate-600 hover:text-blue-600 font-medium transition-colors whitespace-nowrap"
-                  aria-expanded={studyMenuOpen}
-                >
-                  Study Material
-                  <ChevronDown className={`h-4 w-4 transition-transform ${studyMenuOpen ? "rotate-180" : ""}`} />
-                </button>
-
-                {studyMenuOpen && (
-                  <div className="absolute left-1/2 top-full z-50 w-72 -translate-x-1/2 pt-3">
-                    <div className="rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-900/10">
-                      <Link href="/study-material?tab=govt" className="flex items-start gap-3 rounded-xl p-3 hover:bg-blue-50" onClick={() => setStudyMenuOpen(false)}>
-                        <BookOpen className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" />
-                        <span><strong className="block text-sm text-slate-800">Govt Exam Notes</strong><small className="text-xs text-slate-500">SSC, Banking, UPSC and more</small></span>
-                      </Link>
-                      <Link href="/study-material?tab=college" className="flex items-start gap-3 rounded-xl p-3 hover:bg-emerald-50" onClick={() => setStudyMenuOpen(false)}>
-                        <BookOpen className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-                        <span><strong className="block text-sm text-slate-800">College Notes</strong><small className="text-xs text-slate-500">Semester-wise study resources</small></span>
-                      </Link>
-                      <Link href="/study-material?tab=digital" className="flex items-start gap-3 rounded-xl p-3 hover:bg-amber-50" onClick={() => setStudyMenuOpen(false)}>
-                        <BookOpen className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
-                        <span><strong className="block text-sm text-slate-800">Digital Products</strong><small className="text-xs text-slate-500">Learn skills and earn online</small></span>
-                      </Link>
-                    </div>
-                  </div>
-                )}
-              </div>
+              
 
               {/* AI Tools */}
               <Link

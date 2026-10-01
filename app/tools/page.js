@@ -151,8 +151,8 @@ const tools = [
     link: "/watermark-pdf",
   },
   {
-    title: "AI PDF Summary",
-    desc: "Get an instant AI-powered summary of long PDF documents.",
+    title: "AI PDF Summary Premium",
+    desc: "Get instant AI-powered summaries and insights for long PDF documents with a premium one-time payment.",
     icon: Sparkles,
     category: "PDF Intelligence",
     iconClass: "bg-purple-100 text-purple-600",
