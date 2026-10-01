@@ -33,8 +33,12 @@ export default function EditPdfPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+    if (typeof window !== "undefined") {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+        "../../node_modules/pdfjs-dist/legacy/build/pdf.worker.min.mjs",
+        import.meta.url
+      ).toString();
+    }
   }, []);
 
   const loadPdf = useCallback(async (selectedFile) => {

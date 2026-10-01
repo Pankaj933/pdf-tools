@@ -19,8 +19,10 @@ export default function PdfToJpgPage() {
   // --------------------------------------------------
   useEffect(() => {
     if (typeof window !== "undefined") {
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
-        `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+        "../../node_modules/pdfjs-dist/legacy/build/pdf.worker.min.mjs",
+        import.meta.url
+      ).toString();
     }
   }, []);
 
